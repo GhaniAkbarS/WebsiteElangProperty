@@ -1,0 +1,163 @@
+body,
+body.boxed-wrapper .page-wrapper,
+.testimonial-one__single,
+.faq-one-accrodion .accrodion,
+.site-footer {
+    background-color: #0D121E;
+}
+
+.section-title__tagline::before,
+.feature-one__single,
+.about-one,
+.services-one__single,
+.pricing-one__single-inner,
+.faq-one {
+    background-color: #1D2939;
+}
+
+.section-title__title,
+.feature-one__title a,
+.services-one__title a,
+.services-one__read-more a,
+.why-choose-one__points li .content h3,
+.pricing-one__price-title,
+.testimonial-one__text,
+.testimonial-one__client-info h3,
+.news-one__title a,
+.news-one__person-text p,
+.appointment-one__title,
+.appointment-one__input-title,
+.site-footer__social a,
+.footer-widget__company-list li a,
+.footer-widget__contact-list li .content h3,
+.footer-widget__title {
+    color: var(--bixola-white);
+}
+
+.feature-one__text,
+.about-one__text,
+.about-one__points li .text p,
+.services-one__text,
+.why-choose-one__text,
+.why-choose-one__points li .content p,
+.pricing-one__text,
+.pricing-one__points-list li .text p,
+.faq-one-accrodion .accrodion-content p,
+.news-one__text,
+.appointment-one__text,
+.appointment-one__input-box input[type="text"],
+.appointment-one__input-box input[type="email"],
+.appointment-one__input-box textarea,
+.footer-widget__about-text,
+.footer-widget__contact-list li .content p,
+.footer-widget__contact-list li .content p a,
+.footer-widget__newsletter-text,
+.site-footer__bottom-text {
+    color: #EAECF0;
+}
+
+.about-one__right .section-title__tagline::before,
+.faq-one__left .section-title__tagline::before {
+    background-color: rgba(var(--bixola-black-rgb), .30);
+}
+
+.about-one__shape-3 {
+    opacity: .50;
+}
+
+.about-one__shape-1 {
+    opacity: .20;
+}
+
+.about-one__shape-4 {
+    opacity: .20;
+}
+
+.why-choose-one__btn:hover {
+    color: var(--bixola-base);
+}
+
+.why-choose-one__btn:before {
+    background-color: var(--bixola-white);
+}
+
+.portfolio-one {
+    background-color: #080A29;
+}
+
+.pricing-one__single-inner {
+    border: 2px solid rgba(var(--bixola-white-rgb), .10);
+    border-top: 1px solid rgba(var(--bixola-white-rgb), .10);
+    border-bottom: 1px solid rgba(var(--bixola-white-rgb), .10);
+}
+
+.pricing-one__price-box {
+    border-bottom: 1px solid rgba(var(--bixola-white-rgb), .10);
+}
+
+.pricing-one__btn {
+    color: var(--bixola-white);
+    border: 1px solid rgba(var(--bixola-white-rgb), .10);
+}
+
+.pricing-one__most-popular {
+    background: rgba(204, 41, 54, 0.90);
+}
+
+.pricing-one__most-popular p {
+    color: var(--bixola-white);
+}
+
+.faq-one-accrodion .accrodion-title h4 {
+    color: var(--bixola-white);
+}
+
+.faq-one-accrodion .accrodion.active {
+    background-color: var(--bixola-black);
+}
+
+.news-one__content {
+    background-color: #1D2939;
+    border: 1px solid rgba(var(--bixola-white-rgb), .10);
+    border-top: 0;
+}
+
+.news-one__content-top {
+    border-bottom: 1px solid rgba(var(--bixola-white-rgb), .10);
+}
+
+.news-one__single::before {
+    display: none;
+}
+
+.appointment-one__inner {
+    border: 1px solid rgba(var(--bixola-white-rgb), .10);
+    border-bottom: 0;
+    background-color: #1D2939;
+}
+
+.appointment-one__showing-sort .bootstrap-select>.dropdown-toggle {
+    color: #EAECF0 !important;
+}
+
+.appointment-one__showing-sort .bootstrap-select>.dropdown-toggle:before {
+    color: #EAECF0;
+}
+
+.footer-widget__newsletter-btn:hover {
+    background-color: var(--bixola-white);
+}
+
+.footer-widget__newsletter-btn:hover span {
+    color: var(--bixola-base);
+}
+
+.footer-widget__company:before,
+.footer-widget__contact:before,
+.footer-widget__newsletter:before {
+    background-color: rgba(var(--bixola-white-rgb), .10);
+}
+
+.site-footer__top {
+    border-bottom: 1px solid rgba(var(--bixola-white-rgb), .10);
+}
