@@ -10,8 +10,8 @@
 {{-- manggil pages front home services --}}
 @include('pages.frontsites.home._services')
 
-{{-- panggil portofolio --}}
-@include('pages.frontsites.home._portofolio')
+{{-- panggil syarat pengajuan --}}
+@include('pages.frontsites.home._requierment')
 
 {{-- manggil form "hitung simulasi online" --}}
 @include('pages.frontsites.home._simulation')
