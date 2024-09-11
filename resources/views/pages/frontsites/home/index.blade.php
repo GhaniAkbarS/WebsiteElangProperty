@@ -4,7 +4,7 @@
 @include('pages.frontsites.home._slide')
 
 {{-- berguna agar bisa mengatur features --}}
-@include('pages.frontsites.home._features')
+@include('pages.frontsites.home._about')
 
 
 {{-- manggil pages front home services --}}
@@ -14,7 +14,7 @@
 @include('pages.frontsites.home._portofolio')
 
 {{-- manggil form "hitung simulasi online" --}}
-@include('pages.frontsites.home._appointment')
+@include('pages.frontsites.home._simulation')
 
 {{-- memanggil faq --}}
 @include('pages.frontsites.home._faq')
