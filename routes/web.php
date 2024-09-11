@@ -14,8 +14,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// route dibawah memanggil controler home yang berisi, alamat halaman utama, pada pages frontsite
+// dalamnya ada folder home, dengan isi masing masing section
 Route::get('/', HomeController::class)->name('home');
 
+// slash atau garis miring itu adalah jika, setelah link nya itu, uri url namanya
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
