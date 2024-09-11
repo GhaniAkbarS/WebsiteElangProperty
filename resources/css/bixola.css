@@ -15490,6 +15490,8 @@ ul {
   transition: all 500ms ease;
 }
 
+
+
 .news-page-two__single:hover .news-page-two__img img {
   transform: scale(1.05);
 }
