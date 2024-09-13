@@ -1,5 +1,7 @@
 <x-front-app-layout>
 
+{{-- _ menandakan bahwa dia sub dari index --}}
+
 {{-- berguna agar merubah bagian slider nya --}}
 @include('pages.frontsites.home._slide')
 

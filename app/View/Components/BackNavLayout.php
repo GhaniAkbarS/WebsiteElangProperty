@@ -21,6 +21,6 @@ class BackNavLayout extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.back-nav-layout');
+        return view('layouts.backsites.back-nav-layout');
     }
 }

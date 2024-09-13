@@ -21,6 +21,6 @@ class BackAppLayout extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.back-app-layout');
+        return view('layouts.backsites.back-app-layout');
     }
 }

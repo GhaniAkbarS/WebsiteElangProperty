@@ -21,6 +21,6 @@ class FrontNavLayout extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('layouts.front-nav-layout');
+        return view('layouts.frontsites.front-nav-layout');
     }
 }
