@@ -26,6 +26,8 @@ Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
 // route untuk bagian kategori pada backsites
 Route::get('/category', CategoryController::class)->name('category');
+Route::post('/category/store', [CategoryController::class, 'store'])->name('category.store');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
