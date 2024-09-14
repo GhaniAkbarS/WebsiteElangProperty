@@ -3,31 +3,66 @@
 namespace App\Http\Controllers\Backsites\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\EpCategory; // Import model EpCategory
 
 class CategoryController extends Controller
 {
-    // Method to show the form and the list of categories
+    // Tampilkan form input dan tabel kategori
     public function index()
     {
-        $categories = EpCategory::all(); // Fetch all categories
-        return view('pages.backsites.master.category.index', compact('categories'));
+        $category = Category::all();
+        return view('pages.backsites.master.category.index', compact('category'));
     }
 
-    // Method to handle the form submission and store data
+    // Simpan kategori baru
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
         ]);
 
-        EpCategory::create([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
+        // Simpan data ke database
+        Category::create([
+            'title' => $request->title,
+            'description' => $request->description,
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Data has been added successfully.');
+        return redirect()->route('category.index')->with('success', 'Category created successfully');
+    }
+
+    // Menampilkan form untuk mengedit kategori
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        $categories = Category::all();
+        return view('pages.backsites.master.category.index', compact('category', 'categories'));
+    }
+
+    // Update kategori yang ada
+    public function update(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        // Update data kategori
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+
+        return redirect()->route('category.index')->with('success', 'Category updated successfully');
+    }
+
+    // Hapus kategori dari database
+    public function destroy($id)
+    {
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return redirect()->route('category.index')->with('success', 'Category deleted successfully');
     }
 }
