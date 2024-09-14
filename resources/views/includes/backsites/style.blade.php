@@ -13,3 +13,14 @@
       font-feature-settings: "cv03", "cv04", "cv11";
   }
 </style>
+<style>
+    /* Mengatur batas tabel */
+    .table-bordered {
+      border: 1px solid #dee2e6;
+    }
+
+    /* Mengatur batas untuk sel tabel */
+    .table-bordered th, .table-bordered td {
+      border: 1px solid #dee2e6;
+    }
+  </style>
