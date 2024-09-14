@@ -4,9 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EpBlogTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('ep_blog', function (Blueprint $table) {
             $table->id();
@@ -20,14 +23,14 @@ class EpBlogTable extends Migration
             $table->integer('pageview')->default(0);
             $table->text('keyword');
             $table->timestamps();
-
-            // Set up foreign key constraint
-            $table->foreign('category_id')->references('id')->on('ep_category')->onDelete('cascade');
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('ep_blog');
     }
-}
+};

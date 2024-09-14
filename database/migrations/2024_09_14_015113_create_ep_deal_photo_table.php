@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ep_slide', function (Blueprint $table) {
+        Schema::create('ep_deal_photo', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('deal_id'); // Foreign key ke ep_deal
+            $table->string('image');
             $table->timestamps();
+
+            // Setup foreign key relationship
+            $table->foreign('deal_id')->references('id')->on('ep_deal')->onDelete('cascade');
         });
     }
 
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ep_slide');
+        Schema::dropIfExists('ep_deal_photo');
     }
 };
