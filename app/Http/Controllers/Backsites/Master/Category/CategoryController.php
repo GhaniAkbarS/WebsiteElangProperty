@@ -57,24 +57,43 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $category = Category::findOrFail($id); // Mencari kategori berdasarkan ID
+        return view('pages.backsites.master.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public  function update(Request $request, $id)
     {
-        //
+        // Validasi input
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        // Mencari data kategori berdasarkan ID dan memperbarui
+        $category = Category::findOrFail($id);
+        $category->update([
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'content' => $request->content,
+        ]);
+
+        return redirect()->route('category.index')->with('success', 'Category updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    // Menghapus data kategori
+    public function destroy($id)
     {
-        //
+        $category = Category::findOrFail($id); // Mencari kategori berdasarkan ID
+        $category->delete(); // Menghapus data
+
+        return redirect()->route('category.index')->with('success', 'Category deleted successfully');
     }
 }

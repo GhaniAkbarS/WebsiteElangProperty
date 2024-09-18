@@ -15,7 +15,7 @@ class Category extends Model
     // Kolom-kolom yang boleh diisi (mass-assignable)
     protected $fillable = [
         'title',
-        'description',
+        'content',
         'slug',
 
     ];
