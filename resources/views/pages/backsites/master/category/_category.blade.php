@@ -6,14 +6,15 @@
           <div class="d-flex">
             <!-- Form Section -->
             <div class="flex-shrink-1 me-3" style="width: 30%;">
-              <form>
+              <form  action="{{ route('category.store') }}" method="POST">
+                @csrf
                 <div class="mb-3">
-                  <label for="title" class="form-label">Title</label>
-                  <input type="text" id="title" class="form-control" placeholder="Enter title" required>
+                  <label for="title" class="form-label">Judul</label>
+                  <input type="text" id="title" class="form-control" placeholder="Masukkan judul" required>
                 </div>
                 <div class="mb-3">
                   <label for="description" class="form-label">Deskripsi</label>
-                  <textarea id="description" class="form-control" placeholder="Enter description" required></textarea>
+                  <textarea id="description" class="form-control" placeholder="Masukkan deskripsi" required></textarea>
                 </div>
                 <div class="mb-3">
                   <button type="submit" class="btn btn-primary">Simpan</button>
@@ -35,13 +36,19 @@
                     </tr>
                   </thead>
                   <tbody>
+                    @if(isset($categories) && $categories->count() > 0)
+                    @foreach ($categories as $category)
                     <tr>
-                      <td>1</td>
-                      <td>Pengaruh Teknologi</td>
-                      <td>Teknologi telah mengubah cara kita hidup</td>
-                      <td>2024-09-14</td>
-                      <td><a href="#">Edit</a></td>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $category->title }}</td>
+                    <td>{{ $category->content }}</td>
+                    <td>{{ $category->created_at->format('Y-m-d') }}</td>
+                    <td><a href="#">Edit</a></td>
                     </tr>
+                    @endforeach
+                    @else
+                        <tr><td colspan="5">Tidak ada data kategori.</td></tr>
+                    @endif
                     <!-- Lanjutkan dengan baris tambahan jika diperlukan -->
                   </tbody>
                 </table>

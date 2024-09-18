@@ -67,9 +67,6 @@
                 {{-- MEMANGGIL INDEX BLADE  --}}
                 {{ $slot ??'TIDAK ADA HALAMAN'  }}
 
-      
-
-
       {{-- klo ad berubah sebelum letak sini --}}
     @stack('before-style')
     @include('includes.backsites.script')
