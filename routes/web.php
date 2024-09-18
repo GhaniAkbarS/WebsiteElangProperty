@@ -34,9 +34,10 @@ Route::get('/dashboard', DashboardController::class)->name('dashboard');
 // Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
 // Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
 
-Route::prefix('backsites')->group(function(){
-    Route::resource('category', CategoryController::class)->names('category');
+Route::prefix('backsites')->group(function () {
+    Route::resource('category', \App\Http\Controllers\Backsites\Master\Category\CategoryController::class);
 });
+
 
 
 

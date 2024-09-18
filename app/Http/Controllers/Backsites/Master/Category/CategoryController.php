@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backsites\Master\Category;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -31,20 +32,18 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
 
-            // Validasi input
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-            ]);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
 
-            // Simpan data ke database
-            Category::create([
-                'title' => $request->title,
-                'description' => $request->description,
-            ]);
+        Category::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'slug' => Str::slug($request->title),
+        ]);
 
-            return redirect()->route('category.index')->with('success', 'Category created successfully');
-
+        return redirect()->route('category.index')->with('success', 'Category created successfully');
     }
 
     /**

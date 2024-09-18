@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ep_category', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug');
+            $table->string('slug')->unique()->after('title'); // Tambahkan kolom slug
             $table->text('content')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
