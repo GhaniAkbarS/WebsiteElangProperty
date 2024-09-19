@@ -60,6 +60,7 @@
                                     </td>
                                 </tr>
 
+
                                     <!-- Modal Edit -->
                                     <div class="modal fade" id="editModal{{ $category->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $category->id }}" aria-hidden="true">
                                         <div class="modal-dialog">

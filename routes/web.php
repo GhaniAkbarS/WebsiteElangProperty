@@ -3,6 +3,7 @@
 use App\Http\Controllers\Frontsites\home\HomeController;
 use App\Http\Controllers\Backsites\Output\Dashboard\DashboardController;
 use App\Http\Controllers\Backsites\Master\Category\CategoryController;
+use App\Http\Controllers\Backsites\Input\Slide\SlideController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,9 @@ Route::prefix('backsites')->group(function(){
     Route::resource('category', CategoryController::class)->names('category');
 });
 
+Route::prefix('backsites')->group(function(){
+    Route::resource('slide', SlideController::class)->names('slide');
+});
 
 
 
