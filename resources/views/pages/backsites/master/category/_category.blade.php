@@ -38,23 +38,27 @@
                         <tbody>
                             @if(isset($categories) && $categories->count() > 0)
                                 @foreach ($categories as $category)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $category->title }}</td>
-                                        <td>{{ $category->content }}</td>
-                                        <td>{{ $category->created_at->format('Y-m-d') }}</td>
-                                        <td>
-                                            <!-- Link Edit untuk membuka modal -->
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#editModal{{ $category->id }}">Edit</a> |
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $category->title }}</td>
+                                    <td>{{ $category->content }}</td>
+                                    <td>{{ $category->created_at->format('Y-m-d') }}</td>
+                                    <td>
+                                        <!-- Tombol Edit untuk membuka modal -->
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $category->id }}">
+                                            Edit
+                                        </button>
 
-                                            <!-- Link Hapus -->
-                                            <form action="{{ route('category.destroy', $category->id) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <a href="#" onclick="if(confirm('Apakah Anda yakin ingin menghapus data ini?')) { this.closest('form').submit(); } return false;">Hapus</a>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                        <!-- Tombol Hapus -->
+                                        <form action="{{ route('category.destroy', $category->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
 
                                     <!-- Modal Edit -->
                                     <div class="modal fade" id="editModal{{ $category->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $category->id }}" aria-hidden="true">
