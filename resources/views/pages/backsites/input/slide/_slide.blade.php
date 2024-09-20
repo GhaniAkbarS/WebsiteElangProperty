@@ -30,7 +30,6 @@
                 </form>
             </div>
 
-
             <!-- Table Section -->
             <div class="flex-grow-1">
                 <div class="table-responsive">
@@ -65,7 +64,6 @@
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $slide->id }}">
                                             Edit
                                         </button>
-
                                         <!-- Tombol Hapus -->
                                         <form action="{{ route('slide.destroy', $slide->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
@@ -76,8 +74,6 @@
                                         </form>
                                     </td>
                                 </tr>
-
-
                                 <!-- Modal Edit -->
                                 <div class="modal fade" id="editModal{{ $slide->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $slide->id }}" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -115,7 +111,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 @endforeach
                             @else
                                 <tr><td colspan="6">Tidak ada data slide.</td></tr>
@@ -124,8 +119,6 @@
                     </table>
                 </div>
             </div>
-
-
           </div>
         </div>
       </div>
