@@ -6,6 +6,7 @@
         @foreach ($slides as $slide)
         <div class="item main-slider__slide-{{ $loop->iteration }}">
             <div class="main-slider__bg" style="background-image: url({{ asset('storage/' . $slide->image) }});">
+                <img src="{{ asset('storage/' . $slide->image) }}" alt="Slide Image">
             </div><!-- /.slider-one__bg -->
 
             <div class="container">
