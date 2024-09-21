@@ -1,11 +1,9 @@
 <div class="row">
-    <!-- Column for the Form and Table -->
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex">
-            <!-- Form Section -->
-            <div class="flex-shrink-1 me-3" style="width: 30%;">
+    <!-- Form Section (Row 1) -->
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tambah Slide</h5>
                 <form action="{{ route('slide.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
@@ -24,14 +22,17 @@
                         <label for="link" class="form-label">Link (Opsional)</label>
                         <input type="url" id="link" name="link" class="form-control" placeholder="Masukkan link">
                     </div>
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
             </div>
+        </div>
+    </div>
 
-            <!-- Table Section -->
-            <div class="flex-grow-1">
+    <!-- Table Section (Row 2) -->
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Daftar Slide</h5>
                 <div class="table-responsive">
                     <table class="table table-vcenter card-table table-striped table-bordered">
                         <thead>
@@ -119,8 +120,6 @@
                     </table>
                 </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>

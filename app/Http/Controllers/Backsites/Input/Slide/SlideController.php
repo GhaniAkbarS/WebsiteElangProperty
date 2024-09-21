@@ -83,32 +83,40 @@ class SlideController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Slide $slide)
     {
-        // Validasi input
+        // Validasi data
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|file',
-            'link' => 'nullable|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        // Temukan slide berdasarkan ID
-        $slide = Slide::findOrFail($id);
+        // Proses penyimpanan gambar jika ada
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($slide->image) {
+                Storage::delete('public/' . $slide->image); // Menghapus file dari storage
+            }
 
-        // Update gambar jika ada yang diupload baru
-        $imagePath = $request->file('image') ? $request->file('image')->store('slides') : $slide->image;
+            // Simpan gambar baru
+            $image = $request->file('image');
+            $imagePath = $image->store('slides', 'public'); // Menyimpan ke direktori storage/app/public/slides
+        } else {
+            $imagePath = $slide->image; // Gunakan gambar lama jika tidak ada gambar baru yang diunggah
+        }
 
-        // Update data slide
+        // Update data slide ke database
         $slide->update([
             'title' => $request->title,
             'content' => $request->content,
             'image' => $imagePath,
-            'link' => $request->link,
+            'link' => $request->link
         ]);
 
-        return redirect()->route('slide.index')->with('success', 'Slide updated successfully');
+        return redirect()->back()->with('success', 'Slide berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.
