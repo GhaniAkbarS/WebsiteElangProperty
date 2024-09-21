@@ -34,27 +34,32 @@ class SlideController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input
+        // Validasi data
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|file',
-            'link' => 'nullable|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        // Upload gambar jika ada
-        $imagePath = $request->file('image') ? $request->file('image')->store('slides') : null;
+        // Proses penyimpanan gambar
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('slides', 'public'); // Menyimpan ke direktori storage/app/public/slides
+        } else {
+            $imagePath = null; // Handle jika tidak ada gambar
+        }
 
         // Simpan data ke database
         Slide::create([
             'title' => $request->title,
             'content' => $request->content,
-            'image' => $imagePath, // Menyimpan path gambar
-            'link' => $request->link,
+            'image' => $imagePath,
+            'link' => $request->link
         ]);
 
-        return redirect()->route('slide.index')->with('success', 'Slide created successfully');
+        return redirect()->back()->with('success', 'Slide berhasil disimpan.');
     }
+
 
     /**
      * Display the specified resource.
