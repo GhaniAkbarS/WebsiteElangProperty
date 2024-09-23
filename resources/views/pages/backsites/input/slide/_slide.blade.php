@@ -1,9 +1,8 @@
 <div class="row">
-    <!-- Form Section (Row 1) -->
-    <div class="col-md-12 mb-4">
+    <!-- Form Section (Col 1 - Kiri) -->
+    <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Tambah Slide</h5>
                 <form action="{{ route('slide.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
@@ -22,14 +21,16 @@
                         <label for="link" class="form-label">Link (Opsional)</label>
                         <input type="url" id="link" name="link" class="form-control" placeholder="Masukkan link">
                     </div>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Table Section (Row 2) -->
-    <div class="col-md-12">
+    <!-- Table Section (Col 2 - Kanan) -->
+    <div class="col-md-6">
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Daftar Slide</h5>

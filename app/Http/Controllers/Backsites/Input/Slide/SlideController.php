@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Slide;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class SlideController extends Controller
@@ -32,33 +33,40 @@ class SlideController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        // Validasi data
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-        ]);
 
-        // Proses penyimpanan gambar
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imagePath = $image->store('slides', 'public'); // Menyimpan ke direktori storage/app/public/slides
-        } else {
-            $imagePath = null; // Handle jika tidak ada gambar
-        }
+     public function store(Request $request)
+     {
+         // Debugging
+         Log::info($request->all()); // Log semua input dari form
 
-        // Simpan data ke database
-        Slide::create([
-            'title' => $request->title,
-            'content' => $request->content,
-            'image' => $imagePath,
-            'link' => $request->link
-        ]);
+         // Validasi data
+         $request->validate([
+             'title' => 'required|string|max:255',
+             'content' => 'required|string',
+             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+         ]);
 
-        return redirect()->back()->with('success', 'Slide berhasil disimpan.');
-    }
+         // Proses penyimpanan gambar
+         if ($request->hasFile('image')) {
+             $image = $request->file('image');
+             $imagePath = $image->store('slides', 'public'); // Simpan gambar
+             Log::info('Image stored at: ' . $imagePath); // Debugging
+         } else {
+             $imagePath = null;
+         }
+
+         // Simpan data ke database
+         Slide::create([
+             'title' => $request->title,
+             'content' => $request->content,
+             'image' => $imagePath,
+             'link' => $request->link
+         ]);
+
+         return redirect()->back()->with('success', 'Slide berhasil disimpan.');
+     }
+
+
 
 
     /**
@@ -89,10 +97,11 @@ class SlideController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 'nullable' untuk gambar opsional
+            'link' => 'nullable|url' // Validasi opsional untuk link
         ]);
 
-        // Proses penyimpanan gambar jika ada
+        // Proses penyimpanan gambar jika ada gambar baru
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
             if ($slide->image) {
@@ -101,21 +110,22 @@ class SlideController extends Controller
 
             // Simpan gambar baru
             $image = $request->file('image');
-            $imagePath = $image->store('slides', 'public'); // Menyimpan ke direktori storage/app/public/slides
+            $imagePath = $image->store('slides', 'public'); // Menyimpan gambar baru di 'storage/app/public/slides'
         } else {
-            $imagePath = $slide->image; // Gunakan gambar lama jika tidak ada gambar baru yang diunggah
+            $imagePath = $slide->image; // Gunakan gambar lama jika tidak ada gambar baru
         }
 
         // Update data slide ke database
         $slide->update([
             'title' => $request->title,
             'content' => $request->content,
-            'image' => $imagePath,
-            'link' => $request->link
+            'image' => $imagePath, // Path gambar baru atau gambar lama
+            'link' => $request->link, // Link opsional
         ]);
 
         return redirect()->back()->with('success', 'Slide berhasil diperbarui.');
     }
+
 
 
     /**
