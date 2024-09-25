@@ -9,13 +9,12 @@ class Slide extends Model
 {
     use HasFactory;
 
-    // Tentukan nama tabel
+    // Tentukan tabel yang digunakan oleh model ini
     protected $table = 'ep_slide';
 
-    // Tentukan kolom-kolom yang bisa diisi (mass assignable)
+    // Tentukan kolom-kolom yang dapat diisi (fillable)
     protected $fillable = [
         'title',
-        'slug',
         'content',
         'image',
         'link',

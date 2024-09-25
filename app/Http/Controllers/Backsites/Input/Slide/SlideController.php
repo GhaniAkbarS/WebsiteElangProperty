@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Backsites\Input\Slide;
 use App\Http\Controllers\Controller;
 use App\Models\Slide;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SlideController extends Controller
 {
@@ -33,41 +32,30 @@ class SlideController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    public function store(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'link' => 'nullable|string|max:255',
+        ]);
 
-     public function store(Request $request)
-     {
-         // Debugging
-         Log::info($request->all()); // Log semua input dari form
+        // Upload gambar jika ada
+        $imagePath = $request->file('image') ? $request->file('image')->store('slides') : null;
 
-         // Validasi data
-         $request->validate([
-             'title' => 'required|string|max:255',
-             'content' => 'required|string',
-             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-         ]);
+        // Simpan data ke database
+        Slide::create([
+            'title' => $request->title,
+            'slug' => Str::slug($request->title), // Buat slug dari title
+            'content' => $request->content,
+            'image' => $imagePath, // Menyimpan path gambar
+            'link' => $request->link,
+        ]);
 
-         // Proses penyimpanan gambar
-         if ($request->hasFile('image')) {
-             $image = $request->file('image');
-             $imagePath = $image->store('slides', 'public'); // Simpan gambar
-             Log::info('Image stored at: ' . $imagePath); // Debugging
-         } else {
-             $imagePath = null;
-         }
-
-         // Simpan data ke database
-         Slide::create([
-             'title' => $request->title,
-             'content' => $request->content,
-             'image' => $imagePath,
-             'link' => $request->link
-         ]);
-
-         return redirect()->back()->with('success', 'Slide berhasil disimpan.');
-     }
-
-
-
+        return redirect()->route('slide.index')->with('success', 'Slide created successfully');
+    }
 
     /**
      * Display the specified resource.
@@ -91,42 +79,33 @@ class SlideController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Slide $slide)
+    public function update(Request $request, string $id)
     {
-        // Validasi data
+        // Validasi input
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 'nullable' untuk gambar opsional
-            'link' => 'nullable|url' // Validasi opsional untuk link
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'link' => 'nullable|string|max:255',
         ]);
 
-        // Proses penyimpanan gambar jika ada gambar baru
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($slide->image) {
-                Storage::delete('public/' . $slide->image); // Menghapus file dari storage
-            }
+        // Temukan slide berdasarkan ID
+        $slide = Slide::find($id);
 
-            // Simpan gambar baru
-            $image = $request->file('image');
-            $imagePath = $image->store('slides', 'public'); // Menyimpan gambar baru di 'storage/app/public/slides'
-        } else {
-            $imagePath = $slide->image; // Gunakan gambar lama jika tidak ada gambar baru
-        }
+        // Update gambar jika ada yang diupload baru
+        $imagePath = $request->file('image') ? $request->file('image')->store('slides') : $slide->image;
 
-        // Update data slide ke database
+        // Update data slide
         $slide->update([
             'title' => $request->title,
+            'slug' => Str::slug($request->title),
             'content' => $request->content,
-            'image' => $imagePath, // Path gambar baru atau gambar lama
-            'link' => $request->link, // Link opsional
+            'image' => $imagePath,
+            'link' => $request->link,
         ]);
 
-        return redirect()->back()->with('success', 'Slide berhasil diperbarui.');
+        return redirect()->route('slide.index')->with('success', 'Slide updated successfully');
     }
-
-
 
     /**
      * Remove the specified resource from storage.
@@ -136,7 +115,7 @@ class SlideController extends Controller
         // Temukan slide berdasarkan ID dan hapus
         $slide = Slide::findOrFail($id);
 
-        // Hapus gambar jika diperlukan
+        // Hapus gambar jika ada
         if ($slide->image) {
             Storage::delete($slide->image);
         }
