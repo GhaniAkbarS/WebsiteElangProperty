@@ -33,20 +33,20 @@ class SlideController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(SlideRequest $request)
-{
-    // Upload gambar jika ada
-    $imagePath = $request->file('image') ? $request->file('image')->store('slides', 'public') : null;
+    {
+        // Upload gambar jika ada
+        $imagePath = $request->file('image') ? $request->file('image')->store('slides', 'public') : null;
 
-    // Simpan data ke database
-    Slide::create([
-        'title' => $request->title,
-        'content' => $request->content,
-        'image' => $imagePath,
-        'link' => $request->link,
-    ]);
+        // Simpan data ke database
+        Slide::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'image' => $imagePath,
+            'link' => $request->link,
+        ]);
 
-    return redirect()->route('slide.index')->with('success', 'Slide created successfully');
-}
+        return redirect()->route('slide.index')->with('success', 'Slide created successfully');
+    }
 
     /**
      * Display the specified resource.

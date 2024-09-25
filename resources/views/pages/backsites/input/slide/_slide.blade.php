@@ -5,37 +5,42 @@
             <div class="card-body">
                 <form action="{{ route('slide.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     <div class="mb-3">
                         <label for="title" class="form-label">Judul</label>
-                        <input type="text" id="title" name="title" class="form-control" placeholder="Masukkan judul" value="{{ old('title') }}" required>
+                        <input type="text" id="title" name="title" class="form-control" placeholder="Masukkan judul" value="{{ old('title') }}" >
+                        @if ($errors->has('title'))
+                            <span class="text-danger">{{ $errors->first('title') }}</span>
+                        @endif
                     </div>
+
                     <div class="mb-3">
                         <label for="content" class="form-label">Deskripsi</label>
-                        <textarea id="content" name="content" class="form-control" placeholder="Masukkan deskripsi" required>{{ old('content') }}</textarea>
+                        <textarea id="content" name="content" class="form-control" placeholder="Masukkan deskripsi" >{{ old('content') }}</textarea>
+                        @if ($errors->has('content'))
+                            <span class="text-danger">{{ $errors->first('content') }}</span>
+                        @endif
                     </div>
+
                     <div class="mb-3">
                         <label for="image" class="form-label">Gambar</label>
                         <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                        @if ($errors->has('image'))
+                            <span class="text-danger">{{ $errors->first('image') }}</span>
+                        @endif
                     </div>
+
                     <div class="mb-3">
                         <label for="link" class="form-label">Link (Opsional)</label>
                         <input type="url" id="link" name="link" class="form-control" placeholder="Masukkan link" value="{{ old('link') }}">
+                        @if ($errors->has('link'))
+                            <span class="text-danger">{{ $errors->first('link') }}</span>
+                        @endif
                     </div>
+
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
@@ -112,11 +117,11 @@
                                                 @method('PUT')
                                                 <div class="mb-3">
                                                     <label for="title" class="form-label">Judul</label>
-                                                    <input type="text" name="title" class="form-control" value="{{ $slide->title }}" required>
+                                                    <input type="text" name="title" class="form-control" value="{{ $slide->title }}" >
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="content" class="form-label">Deskripsi</label>
-                                                    <textarea name="content" class="form-control" required>{{ $slide->content }}</textarea>
+                                                    <textarea name="content" class="form-control" >{{ $slide->content }}</textarea>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="image" class="form-label">Gambar</label>
