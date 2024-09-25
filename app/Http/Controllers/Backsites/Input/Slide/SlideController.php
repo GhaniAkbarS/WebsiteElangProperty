@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Backsites\Input\Slide;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slide;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\SlideRequest;
+use Illuminate\Support\Facades\Storage; // Import SlideRequestuse Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SlideController extends Controller
@@ -32,30 +32,21 @@ class SlideController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'link' => 'nullable|string|max:255',
-        ]);
+    public function store(SlideRequest $request)
+{
+    // Upload gambar jika ada
+    $imagePath = $request->file('image') ? $request->file('image')->store('slides', 'public') : null;
 
-        // Upload gambar jika ada
-        $imagePath = $request->file('image') ? $request->file('image')->store('slides') : null;
+    // Simpan data ke database
+    Slide::create([
+        'title' => $request->title,
+        'content' => $request->content,
+        'image' => $imagePath,
+        'link' => $request->link,
+    ]);
 
-        // Simpan data ke database
-        Slide::create([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title), // Buat slug dari title
-            'content' => $request->content,
-            'image' => $imagePath, // Menyimpan path gambar
-            'link' => $request->link,
-        ]);
-
-        return redirect()->route('slide.index')->with('success', 'Slide created successfully');
-    }
+    return redirect()->route('slide.index')->with('success', 'Slide created successfully');
+}
 
     /**
      * Display the specified resource.
@@ -79,33 +70,34 @@ class SlideController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        // Validasi input
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'link' => 'nullable|string|max:255',
-        ]);
+    public function update(SlideRequest $request, string $id)
+{
+    // Temukan slide berdasarkan ID
+    $slide = Slide::findOrFail($id);
 
-        // Temukan slide berdasarkan ID
-        $slide = Slide::find($id);
-
-        // Update gambar jika ada yang diupload baru
-        $imagePath = $request->file('image') ? $request->file('image')->store('slides') : $slide->image;
-
-        // Update data slide
-        $slide->update([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title),
-            'content' => $request->content,
-            'image' => $imagePath,
-            'link' => $request->link,
-        ]);
-
-        return redirect()->route('slide.index')->with('success', 'Slide updated successfully');
+    // Jika ada gambar baru yang diupload, simpan gambar tersebut dan hapus gambar lama jika ada
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama jika ada
+        if ($slide->image) {
+            Storage::disk('public')->delete($slide->image);
+        }
+        // Simpan gambar baru
+        $imagePath = $request->file('image')->store('slides', 'public');
+    } else {
+        // Jika tidak ada gambar baru, gunakan gambar lama
+        $imagePath = $slide->image;
     }
+
+    // Update data slide
+    $slide->update([
+        'title' => $request->title,
+        'content' => $request->content,
+        'image' => $imagePath,
+        'link' => $request->link,
+    ]);
+
+    return redirect()->route('slide.index')->with('success', 'Slide updated successfully');
+}
 
     /**
      * Remove the specified resource from storage.

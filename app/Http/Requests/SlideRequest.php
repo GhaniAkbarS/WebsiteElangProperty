@@ -23,12 +23,10 @@ class SlideRequest extends FormRequest
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'link' => 'nullable|url', // Opsional, hanya jika ada link
+            'link' => 'required|nullable|url', // Opsional, hanya jika ada link
         ];
     }
 
-    /**
-     * Kustomisasi pesan kesalahan jika diperlukan.
-     */
+
 
 }
