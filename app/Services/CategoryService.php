@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Backsites\Master\Category;
+namespace App\Services;
 
-use App\Repositories\Backsites\Master\Category\CategoryRepository;
+use App\Repositories\CategoryRepository;
 
 class CategoryService
 {

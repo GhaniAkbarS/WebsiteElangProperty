@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Backsites\Master\Category;
+namespace App\Repositories;
 
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;

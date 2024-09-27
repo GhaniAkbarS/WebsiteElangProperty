@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backsites\Master\Category;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
-use App\Services\Backsites\Master\Category\CategoryService;
+use App\Services\CategoryService; 
 
 class CategoryController extends Controller
 {
