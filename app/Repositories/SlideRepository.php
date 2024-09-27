@@ -23,10 +23,11 @@ class SlideRepository
      * @param array $data
      * @return Slide
      */
-    public function storeSlide($data)
+    public function createSlide(array $data)
     {
         // Simpan gambar jika ada
         if (isset($data['image'])) {
+            // Validasi dan simpan gambar ke storage
             $data['image'] = $data['image']->store('slides', 'public');
         }
 
@@ -51,18 +52,20 @@ class SlideRepository
      * @param array $data
      * @return bool
      */
-    public function updateSlide(Slide $slide, $data)
+    public function updateSlide(Slide $slide, array $data)
     {
         // Jika ada gambar baru yang diupload
         if (isset($data['image'])) {
+            // Hapus gambar lama jika ada
             if ($slide->image) {
                 Storage::disk('public')->delete($slide->image);
             }
+
+            // Simpan gambar baru
             $data['image'] = $data['image']->store('slides', 'public');
-        } else {
-            $data['image'] = $slide->image;
         }
 
+        // Lakukan update pada slide
         return $slide->update($data);
     }
 
@@ -74,10 +77,12 @@ class SlideRepository
      */
     public function deleteSlide(Slide $slide)
     {
+        // Hapus gambar jika ada
         if ($slide->image) {
             Storage::disk('public')->delete($slide->image);
         }
 
+        // Hapus slide dari database
         return $slide->delete();
     }
 }

@@ -3,19 +3,24 @@
 namespace App\Http\Controllers\Backsites\Master\Category;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryRequest; // import Form Request
-use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use App\Http\Requests\CategoryRequest;
+use App\Services\Backsites\Master\Category\CategoryService;
 
 class CategoryController extends Controller
 {
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::all();  // Mengambil semua data kategori
+        $categories = $this->categoryService->getAllCategories();  // Mengambil semua data kategori
         return view('pages.backsites.master.category.index', compact('categories'));
     }
 
@@ -24,7 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.backsites.master.category.create'); // Pastikan ada view untuk create
     }
 
     /**
@@ -33,22 +38,18 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         // Simpan data ke database
-        Category::create([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title), // slug otomatis dari judul
-            'content' => $request->content,
-            'image' => $request->image ? $request->file('image')->store('categories') : null, // simpan gambar
-        ]);
+        $validatedData = $request->validated();
+        $imagePath = $request->hasFile('image') ? $request->file('image')->store('categories') : null;
+
+        $data = [
+            'title' => $validatedData['title'],
+            'content' => $validatedData['content'],
+            'image' => $imagePath,
+        ];
+
+        $this->categoryService->createCategory($data);
 
         return redirect()->route('category.index')->with('success', 'Category created successfully');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
@@ -56,35 +57,35 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::findOrFail($id); // Mencari kategori berdasarkan ID
+        $category = $this->categoryService->getCategoryById($id);
         return view('pages.backsites.master.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CategoryRequest $request, $id)
     {
-        // Update data kategori
-        $category->update([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title), // slug otomatis dari judul
-            'content' => $request->content,
-            'image' => $request->image ? $request->file('image')->store('categories') : $category->image, // update gambar jika ada
-        ]);
+        $validatedData = $request->validated();
+        $imagePath = $request->hasFile('image') ? $request->file('image')->store('categories') : null;
+
+        $data = [
+            'title' => $validatedData['title'],
+            'content' => $validatedData['content'],
+            'image' => $imagePath ?? null,
+        ];
+
+        $this->categoryService->updateCategory($id, $data);
 
         return redirect()->route('category.index')->with('success', 'Category updated successfully');
     }
 
-    /** 
+    /**
      * Remove the specified resource from storage.
      */
-    // Menghapus data kategori
     public function destroy($id)
     {
-        $category = Category::findOrFail($id); // Mencari kategori berdasarkan ID
-        $category->delete(); // Menghapus data
-
+        $this->categoryService->deleteCategory($id);
         return redirect()->route('category.index')->with('success', 'Category deleted successfully');
     }
 }
