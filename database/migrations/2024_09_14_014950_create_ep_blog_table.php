@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ep_blog', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('category_id'); // foreign key
+            $table->foreign('category_id')->references('id')->on('ep_category');
             $table->string('title');
             $table->string('slug');
             $table->string('image')->nullable();

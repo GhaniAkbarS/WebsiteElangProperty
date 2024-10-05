@@ -4,41 +4,35 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Blog extends Model
 {
     use HasFactory;
 
-    protected $table = 'ep_blog'; // Nama tabel sesuai dengan tabel blog Anda di database
+    // Menentukan tabel yang digunakan
+    protected $table = 'ep_blog';
 
-    // Kolom-kolom yang bisa diisi (mass-assignable)
+    // Mengizinkan mass assignment pada field berikut
     protected $fillable = [
-        'category_id', // Hubungan ke tabel kategori
         'title',
         'slug',
         'content',
         'excerpt',
         'status',
-        'pageview',
         'keyword',
+        'category_id',
+        'image',
+        'pageview'  // Tambahkan pageview ke dalam fillable
     ];
 
-    // Mutator untuk membuat slug otomatis
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($blog) {
-            if (empty($blog->slug)) {
-                $blog->slug = Str::slug($blog->title);
-            }
-        });
-    }
-
-    // Relasi dengan model Category (One to Many)
+    // Relasi dengan model Category
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    // Cast untuk status enum
+    protected $casts = [
+        'status' => 'string',
+    ];
 }

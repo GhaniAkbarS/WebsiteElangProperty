@@ -9,25 +9,22 @@ class BlogRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize()
     {
-        return true;
+        return true; // Izinkan semua user untuk mengakses request ini
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules()
     {
         return [
-            'title' => 'required|string|max:255',
-            'category_id' => 'required|integer|exists:categories,id',
-            'content' => 'required',
-            'status' => 'required|in:publish,draft',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category_id' => 'required|exists:ep_category,id', // Pastikan category_id ada di tabel ep_category
+            'title' => 'required|string|max:255', // Validasi judul
+            'slug' => 'required|string|max:255|unique:ep_blog,slug,' . $this->blog, // Validasi slug, kecuali untuk blog yang sama saat update
+            'content' => 'required|string', // Validasi konten
+            'excerpt' => 'nullable|string|max:255', // Validasi excerpt, boleh kosong
+            'status' => 'required|in:publish,draft', // Validasi status
+            'pageview' => 'nullable|integer', // Validasi pageview, boleh kosong
+            'keyword' => 'nullable|string', // Validasi keyword, boleh kosong
         ];
     }
-
 }
