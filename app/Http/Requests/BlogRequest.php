@@ -19,12 +19,12 @@ class BlogRequest extends FormRequest
         return [
             'category_id' => 'required|exists:ep_category,id', // Pastikan category_id ada di tabel ep_category
             'title' => 'required|string|max:255', // Validasi judul
-            'slug' => 'required|string|max:255|unique:ep_blog,slug,' . $this->blog, // Validasi slug, kecuali untuk blog yang sama saat update
+            // 'slug' => '|string|max:255|unique:ep_blog,slug,' . $this->blog, // Validasi slug, kecuali untuk blog yang sama saat update
             'content' => 'required|string', // Validasi konten
-            'excerpt' => 'nullable|string|max:255', // Validasi excerpt, boleh kosong
+            'excerpt' => 'required|string|max:255', // Validasi excerpt, boleh kosong
             'status' => 'required|in:publish,draft', // Validasi status
-            'pageview' => 'nullable|integer', // Validasi pageview, boleh kosong
-            'keyword' => 'nullable|string', // Validasi keyword, boleh kosong
+            // 'pageview' => 'required|integer', // Validasi pageview, boleh kosong, walaupun di form ada, tapi yang kebaca jug di request kalo pake
+            'keyword' => 'required|string', // Validasi keyword, boleh kosong
         ];
     }
 }

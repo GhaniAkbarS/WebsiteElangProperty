@@ -3,9 +3,10 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>#</th>
-                <th>Kategori</th>
+                <th>No</th>
                 <th>Judul</th>
+                <th>Kategori</th>
+                <th>Dilihat</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
@@ -15,8 +16,9 @@
                 <tr>
                     <!-- Nomor Urut -->
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $blog->category->title }}</td>
                     <td>{{ $blog->title }}</td>
+                    <td>{{ $blog->category->title }}</td>
+                    <td>{{ $blog->pageview }} kali</td>
                     <td>{{ $blog->status }}</td>
                     <td>
                         <!-- Dropdown Aksi -->
@@ -42,7 +44,7 @@
 
                 <!-- Form Edit -->
                 <tr id="edit-form-{{ $blog->id }}" style="display: none;">
-                    <td colspan="5">
+                    <td colspan="6">
                         <form action="{{ route('blog.update', $blog->id) }}" method="POST">
                             @csrf
                             @method('PUT')

@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions; // Tambahkan ini untuk menggunakan SlugOptions
 
 class Blog extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSlug; // Perbaiki typo, dari HasFactorym menjadi HasFactory
 
     // Menentukan tabel yang digunakan
     protected $table = 'ep_blog';
@@ -35,4 +37,13 @@ class Blog extends Model
     protected $casts = [
         'status' => 'string',
     ];
+
+    // Konfigurasi slug
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')  // Field yang digunakan untuk menghasilkan slug
+            ->saveSlugsTo('slug')         // Field tempat menyimpan slug
+            ->doNotGenerateSlugsOnUpdate(); // Slug tidak diperbarui saat update
+    }
 }

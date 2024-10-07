@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backsites\Input\Blog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BlogRequest;
 use App\Services\BlogService;
+use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
@@ -31,10 +32,12 @@ class BlogController extends Controller
     // Method untuk menyimpan blog baru
     public function store(BlogRequest $request)
     {
+
         // Validasi data yang masuk dari BlogRequest
         $this->blogService->storeBlog($request->validated()); // Menyimpan blog dengan data yang telah tervalidasi
         return redirect()->route('blog.index')->with('success', 'Blog berhasil disimpan.');
     }
+
 
     // Method untuk menampilkan blog tertentu berdasarkan ID
     public function show($id)
