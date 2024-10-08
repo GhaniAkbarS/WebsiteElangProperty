@@ -40,7 +40,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Judul</th>
-                                <th>Deskripsi</th>
+                                <th>Blog</th> <!-- Ubah Deskripsi menjadi Jumlah Blog -->
                                 <th>Modifikasi</th>
                                 <th class="w-1">Aksi</th>
                             </tr>
@@ -51,7 +51,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $category->title }}</td>
-                                    <td>{{ $category->content }}</td>
+                                    <td>{{ $category->blogs->count() }} </td> <!-- Menampilkan jumlah blog -->
                                     <td>{{ $category->created_at->format('Y-m-d') }}</td>
                                     <td>
                                         <!-- Dropdown untuk Aksi -->
@@ -122,4 +122,5 @@
             </div>
         </div>
     </div>
+
 </div>

@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 
-class Category extends Model
-{
+class Category extends Model {
     use HasFactory;
 
     protected $table = 'ep_category'; // Nama tabel sesuai dengan yang ada di database
@@ -36,6 +35,4 @@ class Category extends Model
     {
         return $this->hasMany(Blog::class, 'category_id');
     }
-
-
 }

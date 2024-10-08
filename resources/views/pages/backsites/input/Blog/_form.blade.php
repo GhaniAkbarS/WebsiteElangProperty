@@ -7,8 +7,8 @@
                 <div class="card">
                     <div class="card-body">
                         <!-- Input Title -->
-                        <div class="form-group">
-                            <label for="title">Title</label>
+                        <div class="form-group mb-3">
+                            <label for="title" class="form-label">Title</label>
                             <input type="text" id="title" name="title" class="form-control" value="{{ old('title') }}">
                             @error('title')
                                 <div class="text-danger">{{ $message }}</div>
@@ -16,8 +16,8 @@
                         </div>
 
                         <!-- Input Excerpt -->
-                        <div class="form-group">
-                            <label for="excerpt">Excerpt</label>
+                        <div class="form-group mb-3">
+                            <label for="excerpt" class="form-label">Excerpt</label>
                             <input type="text" id="excerpt" name="excerpt" class="form-control" value="{{ old('excerpt') }}">
                             @error('excerpt')
                                 <div class="text-danger">{{ $message }}</div>
@@ -25,17 +25,16 @@
                         </div>
 
                         <!-- Input Content -->
-                        <div class="form-group">
-                            <label for="content">Content Blog</label>
-                            <textarea id="content" name="content" class="form-control" rows="10">{{ old('content') }}</textarea>
-                            @error('content')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content Blog</label>
+                            <form method="post">
+                              <textarea id="tinymce-mytextarea">Hello, <b>Tabler</b>!</textarea>
+                            </form>
+                          </div>
 
                         <!-- Input Keyword -->
-                        <div class="form-group">
-                            <label for="keyword">Keyword</label>
+                        <div class="form-group mb-3">
+                            <label for="keyword" class="form-label">Keyword</label>
                             <input type="text" id="keyword" name="keyword" class="form-control" value="{{ old('keyword') }}">
                             @error('keyword')
                                 <div class="text-danger">{{ $message }}</div>
@@ -43,8 +42,8 @@
                         </div>
 
                         <!-- Input Image -->
-                        <div class="form-group">
-                            <label for="image">Image Upload</label>
+                        <div class="form-group mb-3">
+                            <label for="image" class="form-label">Image Upload</label>
                             <input type="file" id="image" name="image" class="form-control-file">
                             @error('image')
                                 <div class="text-danger">{{ $message }}</div>
@@ -59,8 +58,8 @@
                 <div class="card">
                     <div class="card-body">
                         <!-- Input Kategori -->
-                        <div class="form-group">
-                            <label for="category_id">Kategori</label>
+                        <div class="form-group mb-3">
+                            <label for="category_id" class="form-label">Kategori</label>
                             <select id="category_id" name="category_id" class="form-control">
                                 <option value="" disabled selected>Pilih Kategori</option>
                                 @foreach ($categories as $category)
@@ -75,8 +74,8 @@
                         </div>
 
                         <!-- Input Status -->
-                        <div class="form-group">
-                            <label for="status">Status</label>
+                        <div class="form-group mb-3">
+                            <label for="status" class="form-label">Status</label>
                             <select id="status" name="status" class="form-control">
                                 <option value="publish" {{ old('status') == 'publish' ? 'selected' : '' }}>Publish</option>
                                 <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
