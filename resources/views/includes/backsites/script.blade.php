@@ -9,6 +9,7 @@
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="{{asset('backsites/js/tabler.min.js?1692870487')}}" defer></script>
     <script src="{{asset('backsites/js/demo.min.js?1692870487')}}" defer></script>
+    <script src="{{ asset('path/to/tinymce/tinymce.min.js') }}"></script>
     <script>
       // @formatter:off
       document.addEventListener("DOMContentLoaded", function () {
@@ -104,4 +105,67 @@
       // @formatter:on
 
       // @formatter:on
-    </script>
+      <!-- JavaScript Summernote -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.2.0/"
+        }
+    }
+</script>
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Bold,
+        Italic,
+        Font,
+        Paragraph
+    } from 'ckeditor5';
+
+    ClassicEditor
+        .create( document.querySelector( '#editor' ), {
+            plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            ]
+        } )
+        .then( /* ... */ )
+        .catch( /* ... */ );
+</script>
+<script>
+                // Inisialisasi CKEditor 5 untuk elemen textarea dengan ID "editor"
+                ClassicEditor
+                    .create( document.querySelector( '#editor' ) )
+                    .catch( error => {
+                        console.error( error );
+                    });
+            </script>
+
+<!-- Inisialisasi Summernote -->
+<script>
+  $(document).ready(function() {
+    $('#summernote').summernote({
+      height: 300, // Set tinggi editor
+      placeholder: 'Masukkan konten blog di sini...',
+      toolbar: [
+        // Toolbar custom
+        ['style', ['style']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['fontname', ['fontname']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+      ]
+    });
+  });
+</script>
+</script>

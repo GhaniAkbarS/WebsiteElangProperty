@@ -8,7 +8,7 @@
                     <div class="card-body">
                         <!-- Input Title -->
                         <div class="form-group mb-3">
-                            <label for="title" class="form-label">Title</label>
+                            <label for="title"  >Title</label>
                             <input type="text" id="title" name="title" class="form-control" value="{{ old('title') }}">
                             @error('title')
                                 <div class="text-danger">{{ $message }}</div>
@@ -17,24 +17,26 @@
 
                         <!-- Input Excerpt -->
                         <div class="form-group mb-3">
-                            <label for="excerpt" class="form-label">Excerpt</label>
+                            <label for="excerpt"  >Excerpt</label>
                             <input type="text" id="excerpt" name="excerpt" class="form-control" value="{{ old('excerpt') }}">
                             @error('excerpt')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Input Content -->
-                        <div class="mb-3">
-                            <label class="form-label">Content Blog</label>
-                            <form method="post">
-                              <textarea id="tinymce-mytextarea">Hello, <b>Tabler</b>!</textarea>
-                            </form>
-                          </div>
+                        {{-- input field --}}
+                        <div class="form-group mb-3">
+                            <label for="content"  >Content Blog</label>
+                            <textarea name="content" id="editor">{{ old('content') }}</textarea>
+                            @error('content')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
 
                         <!-- Input Keyword -->
                         <div class="form-group mb-3">
-                            <label for="keyword" class="form-label">Keyword</label>
+                            <label for="keyword"  >Keyword</label>
                             <input type="text" id="keyword" name="keyword" class="form-control" value="{{ old('keyword') }}">
                             @error('keyword')
                                 <div class="text-danger">{{ $message }}</div>
@@ -43,7 +45,7 @@
 
                         <!-- Input Image -->
                         <div class="form-group mb-3">
-                            <label for="image" class="form-label">Image Upload</label>
+                            <label for="image"  >Image Upload</label>
                             <input type="file" id="image" name="image" class="form-control-file">
                             @error('image')
                                 <div class="text-danger">{{ $message }}</div>
@@ -59,7 +61,7 @@
                     <div class="card-body">
                         <!-- Input Kategori -->
                         <div class="form-group mb-3">
-                            <label for="category_id" class="form-label">Kategori</label>
+                            <label for="category_id"  >Kategori</label>
                             <select id="category_id" name="category_id" class="form-control">
                                 <option value="" disabled selected>Pilih Kategori</option>
                                 @foreach ($categories as $category)
@@ -75,7 +77,7 @@
 
                         <!-- Input Status -->
                         <div class="form-group mb-3">
-                            <label for="status" class="form-label">Status</label>
+                            <label for="status"  >Status</label>
                             <select id="status" name="status" class="form-control">
                                 <option value="publish" {{ old('status') == 'publish' ? 'selected' : '' }}>Publish</option>
                                 <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
