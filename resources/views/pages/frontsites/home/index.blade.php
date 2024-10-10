@@ -18,6 +18,9 @@
 {{-- manggil form "hitung simulasi online" --}}
 @include('pages.frontsites.home._simulation')
 
+{{-- manggil form "tampilan blog" --}}
+@include('pages.frontsites.home._blog')
+
 {{-- memanggil faq --}}
 @include('pages.frontsites.home._faq')
 

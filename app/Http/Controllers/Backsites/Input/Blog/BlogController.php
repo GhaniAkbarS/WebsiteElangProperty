@@ -16,41 +16,41 @@ class BlogController extends Controller
         $this->blogService = $blogService;
     }
 
-    // Method untuk menampilkan halaman semua blog
+    // Method untuk menampilkan halaman semua blog di backsites
     public function index()
     {
         $blogs = $this->blogService->getAllBlogs(); // Mendapatkan semua blog
         return view('pages.backsites.input.Blog.index', compact('blogs')); // Mengirim data ke view
     }
+
+    // Method untuk menampilkan form tambah blog di backsites
     public function create()
     {
         $categories = $this->blogService->getCategories(); // Mengambil data kategori
         return view('pages.backsites.input.Blog._form', compact('categories')); // Mengirim data kategori ke view
     }
 
-
     // Method untuk menyimpan blog baru
     public function store(BlogRequest $request)
     {
-
         // Validasi data yang masuk dari BlogRequest
         $this->blogService->storeBlog($request->validated()); // Menyimpan blog dengan data yang telah tervalidasi
         return redirect()->route('blog.index')->with('success', 'Blog berhasil disimpan.');
     }
 
-
-    // Method untuk menampilkan blog tertentu berdasarkan ID
+    // Method untuk menampilkan detail blog di backsites
     public function show($id)
     {
         $blog = $this->blogService->findById($id); // Mencari blog berdasarkan ID
-        return view('pages.backsites.input.Blog.show', compact('blog')); // Menampilkan detail blog
+        return view('pages.backsites.input.Blog.show', compact('blog')); // Mengirim data blog ke view
     }
 
-    // Method untuk menampilkan form edit blog
+    // Method untuk menampilkan form edit blog di backsites
     public function edit($id)
     {
         $blog = $this->blogService->findById($id); // Mencari blog yang akan di-edit berdasarkan ID
-        return view('pages.backsites.input.Blog.edit', compact('blog')); // Mengirim data blog ke view edit
+        $categories = $this->blogService->getCategories(); // Mengambil data kategori
+        return view('pages.backsites.input.Blog.edit', compact('blog', 'categories')); // Mengirim data blog dan kategori ke view edit
     }
 
     // Method untuk mengupdate blog yang sudah ada
@@ -67,5 +67,19 @@ class BlogController extends Controller
         $blog = $this->blogService->findById($id); // Mencari blog berdasarkan ID
         $this->blogService->deleteBlog($blog); // Menghapus blog
         return redirect()->route('blog.index')->with('success', 'Blog berhasil dihapus.');
+    }
+
+    // Method untuk menampilkan semua blog di frontsites
+    public function frontIndex()
+    {
+        $blogs = $this->blogService->getAllBlogs(); // Mengambil semua blog dari service
+        return view('pages.frontsites.blog.index', compact('blogs')); // Mengirim data ke view frontsites
+    }
+
+    // Method untuk menampilkan detail blog tertentu di frontsites
+    public function frontShow($id)
+    {
+        $blog = $this->blogService->findById($id); // Mencari blog berdasarkan ID
+        return view('pages.frontsites.blog.show', compact('blog')); // Mengirim data blog ke view detail
     }
 }

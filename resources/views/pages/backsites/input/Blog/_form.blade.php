@@ -33,15 +33,15 @@
                             @enderror
                         </div>
 
-
                         <!-- Input Keyword -->
                         <div class="form-group mb-3">
-                            <label for="keyword"  >Keyword</label>
-                            <input type="text" id="keyword" name="keyword" class="form-control" value="{{ old('keyword') }}">
+                            <label for="keyword">Keyword</label>
+                            <input type="text" id="keyword" name="keyword" class="form-control" value="{{ old('keyword') }}" data-role="tagsinput">
                             @error('keyword')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+
 
                         <!-- Input Image -->
                         <div class="form-group mb-3">

@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Frontsites\home;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Slide; // Tambahkan model Slide untuk mengambil data dari tabel ep_slide
+use App\Models\Slide;
+use App\Models\Blog; // Tambahkan model Slide untuk mengambil data dari tabel ep_slide
 
 class HomeController extends Controller
 {
@@ -15,5 +16,15 @@ class HomeController extends Controller
 
         // Kirim data slides ke view
         return view('pages.frontsites.home.index', compact('slides'));
+
+        // Mengambil data blog yang berstatus publish, misalnya 6 blog terbaru
+        $blogs = Blog::with('category') // Mengambil kategori terkait
+        ->where('status', 'publish') // Hanya blog yang berstatus publish
+        ->latest() // Mengurutkan dari yang terbaru
+        ->take(6) // Ambil 6 blog terbaru
+        ->get();
+
+        // Kirim data blogs ke view
+        return view('pages.frontsites.home.index', compact('blogs'));
     }
 }
