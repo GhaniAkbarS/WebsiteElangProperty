@@ -26,7 +26,7 @@
 
                         {{-- input field --}}
                         <div class="form-group mb-3">
-                            <label for="content"  >Content Blog</label>
+                            <label for="content" >Content Blog</label>
                             <textarea name="content" id="editor">{{ old('content') }}</textarea>
                             @error('content')
                                 <div class="text-danger">{{ $message }}</div>
@@ -41,7 +41,6 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-
 
                         <!-- Input Image -->
                         <div class="form-group mb-3">

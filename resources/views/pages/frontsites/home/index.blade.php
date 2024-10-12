@@ -8,7 +8,6 @@
 {{-- berguna agar bisa mengatur features --}}
 @include('pages.frontsites.home._about')
 
-
 {{-- manggil pages front home services --}}
 @include('pages.frontsites.home._services')
 
@@ -18,8 +17,8 @@
 {{-- manggil form "hitung simulasi online" --}}
 @include('pages.frontsites.home._simulation')
 
-{{-- manggil form "tampilan blog" --}}
-@include('pages.frontsites.home._blog')
+{{-- memanggil form "tampilan blog" --}}
+@include('pages.frontsites.home._blog') {{-- Memanggil _blog blade --}}
 
 {{-- memanggil faq --}}
 @include('pages.frontsites.home._faq')

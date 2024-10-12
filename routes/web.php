@@ -26,6 +26,15 @@ Route::get('/', HomeController::class)->name('home');
 // slash atau garis miring itu adalah jika, setelah link nya itu, uri url namanya
 Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
+Route::prefix('backsites')->group(function(){
+    Route::resource('category', CategoryController::class)->names('category');
+    Route::resource('slide', SlideController::class)->names('slide');
+    Route::resource('blog', BlogController::class)->names('blog');
+});
+
+Route::get('/blogs', [App\Http\Controllers\Backsites\Input\Blog\BlogController::class, 'frontIndex'])->name('blog.frontIndex');
+
+
 // route untuk bagian kategori pada backsites
 // Route::prefix('category')->group(function () {
 //     Route::get('/', [CategoryController::class, 'index'])->name('category.index');
@@ -37,11 +46,7 @@ Route::get('/dashboard', DashboardController::class)->name('dashboard');
 // Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
 
 
-Route::prefix('backsites')->group(function(){
-    Route::resource('category', CategoryController::class)->names('category');
-    Route::resource('slide', SlideController::class)->names('slide');
-    Route::resource('blog', BlogController::class)->names('blog');
-});
+
 
 
 

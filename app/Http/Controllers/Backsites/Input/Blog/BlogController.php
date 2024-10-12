@@ -36,6 +36,7 @@ class BlogController extends Controller
         // Validasi data yang masuk dari BlogRequest
         $this->blogService->storeBlog($request->validated()); // Menyimpan blog dengan data yang telah tervalidasi
         return redirect()->route('blog.index')->with('success', 'Blog berhasil disimpan.');
+        $blog->content = strip_tags($request->input('content'));
     }
 
     // Method untuk menampilkan detail blog di backsites
@@ -72,8 +73,8 @@ class BlogController extends Controller
     // Method untuk menampilkan semua blog di frontsites
     public function frontIndex()
     {
-        $blogs = $this->blogService->getAllBlogs(); // Mengambil semua blog dari service
-        return view('pages.frontsites.blog.index', compact('blogs')); // Mengirim data ke view frontsites
+        $blogs = $this->blogService->getAllBlogs(); // Mendapatkan semua blog
+        return view('pages.frontsites.home.index', compact('blogs')); // Pastikan untuk mengirimkan $blogs ke view
     }
 
     // Method untuk menampilkan detail blog tertentu di frontsites
