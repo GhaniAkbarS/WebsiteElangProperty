@@ -1,12 +1,21 @@
 <!-- Blog Section Start -->
 <section class="blog-section">
+    <div class="news-one__shape-1 img-bounce">
+        <img src="assets/images/shapes/news-one-shape-1.png" alt="">
+    </div>
+    <div class="news-one__shape-2 float-bob-y">
+        <img src="assets/images/shapes/news-one-shape-2.png" alt="">
+    </div>
+    <div class="news-one__shape-3 rotate-me">
+        <img src="assets/images/shapes/news-one-shape-3.png" alt="">
+    </div>
     <div class="container">
         <div class="section-title text-center">
-            <p class="section-title__tagline">Latest Blog</p>
-            <h2 class="section-title__title">Learn about our latest news from blog.</h2>
+            <p class="section-title__tagline">Blog</p>
+            <h2 class="section-title__title">Informasi .</h2>
         </div>
         <div class="row">
-            @forelse(App\Models\Blog::all() as $blog)
+            @forelse($blogs as $blog)
             <div class="col-xl-4 col-lg-4 wow fadeInLeft" data-wow-delay="100ms">
                 <div class="news-one__single">
                     <div class="news-one__img-box">
@@ -23,7 +32,9 @@
                             <h3 class="news-one__title">
                                 <a href="/blog/{{ $blog->id }}">{{ $blog->title }}</a> <!-- Langsung menggunakan URL -->
                             </h3>
-                            <p class="news-one__text">{{ \Illuminate\Support\Str::limit($blog->content, 100, '...') }}</p>
+                            <p class="news-one__text">
+                                {!! str_replace('!!', '', \Illuminate\Support\Str::limit($blog->content, 100, '...')) !!}
+                            </p> <!-- Hilangkan tanda !! -->
                         </div>
                         <div class="news-one__person-and-date">
                             <div class="news-one__date">

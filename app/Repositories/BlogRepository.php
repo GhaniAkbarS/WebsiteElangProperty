@@ -9,7 +9,14 @@ class BlogRepository
 {
     public function getAll()
     {
-        return Blog::all();
+        return Blog::with("category")->latest()->get();
+    }
+
+    public function getByLimitByWhere($limit,$where) {
+
+        return Blog::with("category")
+        ->where($where)
+        ->take($limit)->latest()->get();
     }
 
     public function findById($id)

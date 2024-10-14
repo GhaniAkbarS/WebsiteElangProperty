@@ -6,25 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Slide;
 use App\Models\Blog; // Tambahkan model Slide untuk mengambil data dari tabel ep_slide
+use App\Services\FrontSites\HomeService;
 
 class HomeController extends Controller
 {
+    protected $homeservice;
+
+    public function __construct(HomeService $homeService)
+    {
+        $this->homeservice = $homeService;
+    }
     public function __invoke()
     {
         // Mengambil data slide dari database, misalnya 3 slider terbaru
-        $slides = Slide::latest()->take(3)->get();
+        // $slides = Slide::latest()->take(3)->get();
 
-        // Kirim data slides ke view
-        return view('pages.frontsites.home.index', compact('slides'));
+        $data=[
+            "slides" => $this->homeService->handleHomeSlide(3),
+            "blogs"=>$this->homeservice->handleHomeBlog(1,['status'=>'publish']),
+            //'status' itu karena blog ada status nya publish apa engga
+        ];
 
-        // Mengambil data blog yang berstatus publish, misalnya 6 blog terbaru
-        $blogs = Blog::with('category') // Mengambil kategori terkait
-        ->where('status', 'publish') // Hanya blog yang berstatus publish
-        ->latest() // Mengurutkan dari yang terbaru
-        ->take(6) // Ambil 6 blog terbaru
-        ->get();
 
         // Kirim data blogs ke view
-        return view('pages.frontsites.home.index', compact('blogs'));
+        return view('pages.frontsites.home.index')->with($data);
     }
 }

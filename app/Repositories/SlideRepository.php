@@ -14,7 +14,13 @@ class SlideRepository
      */
     public function getAllSlides()
     {
-        return Slide::all();
+        return Slide::with("slide")->latest()->take(3)->get();
+    }
+
+    public function getByLimit($limit)
+    {
+        return Slide::with("slide")
+        ->latest()->take($limit)->get();
     }
 
     /**

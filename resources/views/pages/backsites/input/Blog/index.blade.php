@@ -16,8 +16,8 @@
                 <tr>
                     <!-- Nomor Urut -->
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $blog->title }}</td>
-                    <td>{{ $blog->category->title }}</td>
+                    <td>{!! $blog->title !!}</td> <!-- Gunakan untuk menghindari tag <p> -->
+                    <td>{!! $blog->category->title !!}</td> <!-- Gunakan untuk menghindari tag <p> -->
                     <td>{{ $blog->pageview }} kali</td>
                     <td>{{ $blog->status }}</td>
                     <td>
@@ -28,7 +28,7 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $blog->id }}">
                                 <li>
-                                    <a class="dropdown-item" href="#" onclick="openEditModal({{ $blog->id }}, '{{ $blog->title }}', {{ $blog->category_id }}, '{{ $blog->status }}')">Edit</a>
+                                    <a class="dropdown-item" href="#" onclick="openEditModal({{ $blog->id }}, '{!! $blog->title !!}', {!! $blog->category_id !!}, '{{ $blog->status }}')">Edit</a> <!-- Gunakan pada modal edit -->
                                 </li>
                                 <li>
                                     <form action="{{ route('blog.destroy', $blog->id) }}" method="POST" style="display:inline;" id="delete-form-{{ $blog->id }}">
