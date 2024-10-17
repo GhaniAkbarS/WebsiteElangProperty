@@ -13,7 +13,7 @@ class HomeService {
     public function __construct(BlogRepository $blogRepository, SlideRepository $slideRepository)
     {
         $this->blogRepository = $blogRepository;
-        $this->slideRepository = $blogRepository;
+        $this->slideRepository = $slideRepository;
     }
 
     public function handleHomeBlog($limit,$where) {

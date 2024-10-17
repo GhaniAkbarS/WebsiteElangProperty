@@ -14,13 +14,13 @@ class SlideRepository
      */
     public function getAllSlides()
     {
-        return Slide::with("slide")->latest()->take(3)->get();
+        return Slide::latest()->take(3)->get(); // Mengambil 3 slide terbaru tanpa relasi
     }
+
 
     public function getByLimit($limit)
     {
-        return Slide::with("slide")
-        ->latest()->take($limit)->get();
+        return Slide::latest()->take($limit)->get();
     }
 
     /**

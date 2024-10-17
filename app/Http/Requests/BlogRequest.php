@@ -23,6 +23,7 @@ class BlogRequest extends FormRequest
             'content' => 'required|string', // Validasi konten
             'excerpt' => 'required|string|max:255', // Validasi excerpt, boleh kosong
             'status' => 'required|in:publish,draft', // Validasi status
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
             // 'pageview' => 'required|integer', // Validasi pageview, boleh kosong, walaupun di form ada, tapi yang kebaca jug di request kalo pake
             'keyword' => 'required|string', // Validasi keyword, boleh kosong
         ];

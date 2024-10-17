@@ -5,6 +5,6 @@
 
 
 {{-- Input Tags --}}
-<meta name="robots" content="index, follow" />
+{{-- <meta name="robots" content="index, follow" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-
+ --}}

@@ -22,11 +22,11 @@ class HomeController extends Controller
         // $slides = Slide::latest()->take(3)->get();
 
         $data=[
-            "slides" => $this->homeService->handleHomeSlide(3),
-            "blogs"=>$this->homeservice->handleHomeBlog(1,['status'=>'publish']),
+            "slides" => $this->homeservice->handleHomeSlide(3),
+            "blogs"=>$this->homeservice->handleHomeBlog(6,['status'=>'publish']),
             //'status' itu karena blog ada status nya publish apa engga
         ];
-
+        
 
         // Kirim data blogs ke view
         return view('pages.frontsites.home.index')->with($data);
