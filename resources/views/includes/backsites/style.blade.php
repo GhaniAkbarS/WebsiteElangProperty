@@ -68,3 +68,44 @@
     }
     </style> --}}
 
+{{-- Deal form layout --}}
+<style>
+    .form-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        flex: 1 1 calc(50% - 20px); /* Membuat form-group mengambil 50% lebar dan ada jarak antar item */
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form-group input[type="file"] {
+        padding: 5px;
+    }
+
+    /* Agar tampilan tetap responsif pada layar kecil */
+    @media (max-width: 768px) {
+        .form-group {
+            flex: 1 1 100%; /* Membuat elemen form mengambil seluruh lebar layar pada ukuran kecil */
+        }
+    }
+</style>
+
+

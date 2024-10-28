@@ -5,6 +5,7 @@ use App\Http\Controllers\Backsites\Output\Dashboard\DashboardController;
 use App\Http\Controllers\Backsites\Master\Category\CategoryController;
 use App\Http\Controllers\Backsites\Input\Slide\SlideController;
 use App\Http\Controllers\Backsites\Input\Blog\BlogController;
+use App\Http\Controllers\Backsites\Input\Deal\DealController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,9 +31,10 @@ Route::prefix('backsites')->group(function(){
     Route::resource('category', CategoryController::class)->names('category');
     Route::resource('slide', SlideController::class)->names('slide');
     Route::resource('blog', BlogController::class)->names('blog');
+    Route::resource('deal', DealController::class)->names('deal');
 });
 
-Route::get('/blogs', [App\Http\Controllers\Backsites\Input\Blog\BlogController::class, 'frontIndex'])->name('blog.frontIndex');
+// Route::get('/blogs', [App\Http\Controllers\Backsites\Input\Blog\BlogController::class, 'frontIndex'])->name('blog.frontIndex');
 
 
 // route untuk bagian kategori pada backsites

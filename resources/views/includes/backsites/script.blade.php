@@ -163,5 +163,34 @@
 //useinputtag
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-      UseBootstrapTag(document.getElementById('example'))
+    UseBootstrapTag(document.getElementById('example'))
+</script>
+
+//Deal input
+
+<!-- JavaScript untuk Menampilkan/Menyembunyikan Input Berdasarkan Jenis Akad -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dealType = document.getElementById('deal_type');
+            const carBrandInput = document.getElementById('carBrandInput');
+            const carTypeInput = document.getElementById('carTypeInput');
+
+            function toggleCarFields() {
+                const selectedType = dealType.value;
+                if (selectedType === 'Mobil Bekas' || selectedType === 'Mobil Baru') {
+                    carBrandInput.style.display = 'block';
+                    carTypeInput.style.display = 'block';
+                } else {
+                    carBrandInput.style.display = 'none';
+                    carTypeInput.style.display = 'none';
+                }
+            }
+
+            // Jalankan fungsi ketika jenis akad berubah
+            dealType.addEventListener('change', toggleCarFields);
+
+            // Panggil fungsi saat halaman pertama kali dimuat
+            toggleCarFields();
+        });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

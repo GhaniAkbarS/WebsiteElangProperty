@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('ep_deal', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('branch_id'); // Foreign key ke ep_branch
+            $table->string('car_brand')->nullable(); // Merek mobil
+            $table->string('car_type')->nullable(); // Jenis mobil
             $table->string('title');
             $table->string('slug');
             $table->date('deal_date');
-            $table->enum('deal_type', ['Mobil Bekas', 'Mobil Baru', 'Rumah', 'Tanah', 'Ruko']);
+            $table->string('deal_type'); // Ganti enum menjadi string
             $table->string('image');
             $table->text('keyword');
             $table->longText('content')->nullable();
