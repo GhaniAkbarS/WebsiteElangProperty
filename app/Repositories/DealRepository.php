@@ -21,11 +21,17 @@ class DealRepository
         $deal->update($data);
         return $deal;
     }
-    
+
     // Mendapatkan semua deals
     public function getAllDeals()
     {
         return Deal::with('branch')->get(); // Memuat relasi dengan cabang jika diperlukan
+    }
+
+    //get deal dngen branches
+    public function getDealsWithBranch()
+    {
+        return Deal::with('branch');
     }
 
     // Mendapatkan data cabang (ep_branch)

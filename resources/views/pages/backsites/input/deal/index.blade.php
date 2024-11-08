@@ -1,58 +1,50 @@
 <x-back-app-layout>
-    <body>
-        <div class="container mt-4">
-            <!-- Tombol Tambah Data Akad -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2>Daftar Akad</h2>
-                <a href="{{ route('deal.create') }}" class="btn btn-primary">Tambah Data Akad</a>
-            </div>
+    @push('after-style')
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    @endpush
 
-            <!-- Tabel Data -->
-            <table class="table table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>No</th>
-                        <th>Judul</th>
-                        <th>Cabang</th>
-                        <th>Akad</th>
-                        <th>Modifikasi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($deals as $index => $deal)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <!-- Kondisi untuk Judul Akad -->
-                            <td>
-                                @if($deal->deal_type == 'Rumah' || $deal->deal_type == 'Ruko')
-                                    {{ $deal->deal_type }} (unit) - {{ $deal->car_brand }} - {{ $deal->car_type }} - {{ $deal->branch->name }}
-                                @elseif($deal->deal_type == 'Tanah')
-                                    {{ $deal->deal_type }} (sebidang) - {{ $deal->car_brand }} - {{ $deal->car_type }} - {{ $deal->branch->name }}
-                                @else
-                                    {{ $deal->deal_type }} - {{ $deal->car_brand }} - {{ $deal->car_type }} - {{ $deal->branch->name }}
-                                @endif
-                            </td>
-                            <td>{{ $deal->branch->name }}</td>
-                            <td>{{ $deal->deal_type }}</td>
-                            <td>{{ $deal->modification ?? 'Tidak Ada' }}</td>
-                            <td>
-                                <a href="{{ route('deal.edit', $deal->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <form action="{{ route('deal.destroy', $deal->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Tidak ada data tersedia</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Daftar Akad</h2>
+            <a href="{{ route('deal.create') }}" class="btn btn-primary">Tambah Data Akad</a>
         </div>
 
-    </body>
+        <table id="deals-table" class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>No</th>
+                    <th>Judul</th>
+                    <th>Cabang</th>
+                    <th>Akad</th>
+                    <th>Modifikasi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    @push('after-script')
+    <!-- jQuery and DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="{{ asset('backsites/js/jquery.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#deals-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('deal.index') }}', // Route ke controller method untuk mengambil data
+                columns: [
+                    { data: 'DT_RowIndex', orderable: false, searchable: false }, // Nomor baris
+                    { data: 'title' },
+                    { data: 'branch.title', defaultContent: 'Cabang Tidak Ditemukan' },
+                    { data: 'deal_type' },
+                    { data: 'modification', defaultContent: 'Tidak Ada' },
+                    { data: 'action', orderable: false, searchable: false } // Tombol aksi
+                ]
+            });
+        });
+    </script>
+    @endpush
 </x-back-app-layout>

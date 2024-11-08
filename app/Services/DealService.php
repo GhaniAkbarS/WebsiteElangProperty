@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Repositories\DealRepository;
 use Illuminate\Support\Str; // Untuk helper manipulasi string
 use App\Models\Deal; // Untuk mengakses model Deal
+use App\Models\Branch; // Tambahkan ini
+use Yajra\DataTables\DataTables;
+use App\Models\CarBrand;
 
 class DealService
 {
@@ -27,41 +30,74 @@ class DealService
 
     public function storeDeal($request)
     {
-        dd($request->all()); // Memeriksa data yang diterima oleh DealService
+        // Ambil data yang telah divalidasi
+        $validatedData = $request->validated();
 
-        $title = $this->generateTitle($request);
-        $slug = Str::slug($title, '-'); // Membuat slug berdasarkan title
+        // Menghasilkan title secara otomatis berdasarkan data request
+        $validatedData['title'] = $this->generateTitle($validatedData);
 
-        // Simpan data dengan title dan slug yang telah di-generate
-        return Deal::create([
-            'branch_id' => $request->branch_id,
-            'car_brand' => $request->car_brand,
-            'car_type' => $request->car_type,
-            'title' => $title,
-            'slug' => $slug,
-            'deal_date' => $request->deal_date,
-            'deal_type' => $request->deal_type,
-            'image' => $request->image,
-            'keyword' => $request->keyword,
-            'content' => $request->content,
-            // Kolom lainnya...
-        ]);
+        // Membuat slug dari title yang telah dihasilkan
+        $validatedData['slug'] = Str::slug($validatedData['title'], '-');
+
+        // Menyimpan data ke dalam tabel `ep_deal`
+        return Deal::create($validatedData);
     }
 
-    private function generateTitle($request)
+    // Method untuk menggenerate title secara otomatis
+    private function generateTitle($data)
     {
-        if (in_array($request->deal_type, ['Mobil_Baru', 'Mobil_Bekas'])) {
-            return "Akad {$request->deal_type} - {$request->car_brand} {$request->car_type} - Cabang {$request->branch_id}";
-        } else {
-            $unitType = ($request->deal_type == 'Tanah') ? 'Sebidang' : 'Unit';
-            return "Akad {$request->deal_type} - {$unitType} - Cabang {$request->branch_id}";
+        // Mengambil data dari request
+        $dealType = $data['deal_type'] ?? null;
+        $akad = "Akad";
+        $brand = $data['car_brand'] ?? '';  // Gunakan jika tersedia
+        $jenisMobil = $data['car_type'] ?? '';  // Gunakan jika tersedia
+
+        // Dapatkan nama cabang menggunakan relasi
+        $branch = Branch::find($data['branch_id']);
+        $branchName = $branch ? $branch->title : 'Cabang Tidak Ditemukan';
+
+        // Kondisi untuk Mobil Bekas atau Baru
+        if ($dealType === 'Mobil Baru' || $dealType === 'Mobil Bekas') {
+            return "{$akad} {$brand} {$jenisMobil} Cabang {$branchName}";
         }
+
+        // Kondisi untuk Rumah atau Ruko
+        if ($dealType === 'Rumah' || $dealType === 'Ruko') {
+            return "{$akad} 1 Unit {$dealType} Cabang {$branchName}";
+        }
+
+        // Kondisi untuk Tanah
+        if ($dealType === 'Tanah') {
+            return "{$akad} 1 Bidang {$dealType} Cabang {$branchName}";
+        }
+
+        return 'Judul Tidak Diketahui'; // Jika tidak ada yang cocok
     }
+
 
     public function getAllDeals()
     {
         return $this->dealRepository->getAllDeals();
     }
+
+    // public function getDealsDataTables()
+    // {
+    //     $deals = $this->dealRepository->getDealsWithBranch();
+
+    //     return DataTables::of($deals)
+    //         ->addIndexColumn()
+    //         ->addColumn('action', function($row) {
+    //             $editUrl = route('deal.edit', $row->id);
+    //             $deleteForm = '<form action="' . route('deal.destroy', $row->id) . '" method="POST" style="display:inline;">
+    //                 ' . csrf_field() . '
+    //                 ' . method_field('DELETE') . '
+    //                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">Hapus</button>
+    //             </form>';
+    //             return '<a href="' . $editUrl . '" class="btn btn-warning btn-sm">Edit</a> ' . $deleteForm;
+    //         })
+    //         ->rawColumns(['action'])
+    //         ->make(true);
+    // }
 
     public function findDealById($id)
     {

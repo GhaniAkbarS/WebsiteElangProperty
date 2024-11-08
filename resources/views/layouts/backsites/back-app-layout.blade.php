@@ -68,9 +68,9 @@
                 {{ $slot ??'TIDAK ADA HALAMAN'  }}
 
       {{-- klo ad berubah sebelum letak sini --}}
-    @stack('before-style')
+    @stack('before-script')
     @include('includes.backsites.script')
-    @stack('after-style')
+    @stack('after-script')
     {{-- klo  --}}
     </body>
 </html>

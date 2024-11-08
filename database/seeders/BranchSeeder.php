@@ -14,17 +14,24 @@ class BranchSeeder extends Seeder
     {
         // Menambahkan data cabang menggunakan model Branch
         Branch::create([
-            'title' => 'Cabang Pusat',
+            'title' => 'Elang Property Pekanbaru',
             'slug' => 'cabang-pusat',
             'phone' => '12098',
             'address' => 'Jl. Amal Mulia',
         ]);
 
         Branch::create([
-            'title' => 'Cabang Jakarta',
+            'title' => 'Elang Property Jakarta',
             'slug' => 'cabang-jakarta',
             'phone' => '39747424',
             'address' => 'Jl. Disana',
+        ]);
+
+        Branch::create([
+            'title' => 'Elang Property Bandung',
+            'slug' => 'cabang-jakarta',
+            'phone' => '39747424',
+            'address' => 'Jl. Disitu',
         ]);
     }
 }
