@@ -1,4 +1,80 @@
 <x-back-app-layout>
+    @push('after-style')
+
+
+<!-- Google Fonts -->
+<style>
+    @import url('https://rsms.me/inter/inter.css');
+    :root {
+        --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+    }
+    body {
+        font-feature-settings: "cv03", "cv04", "cv11";
+    }
+  </style>
+
+  <!-- CKEditor Styling -->
+  <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
+  <style>
+    /* Mengatur tinggi editor CKEditor */
+    .ck-editor__editable {
+        min-height: 300px;
+    }
+  </style>
+
+  <!-- Table Styling -->
+  <style>
+    /* Mengatur batas tabel */
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    /* Mengatur batas untuk sel tabel */
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+  </style>
+
+  <!-- Form Layout Styling -->
+  <style>
+    .form-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        flex: 1 1 calc(50% - 20px); /* Membuat form-group mengambil 50% lebar dengan jarak antar item */
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form-group input[type="file"] {
+        padding: 5px;
+    }
+
+    /* Agar tampilan tetap responsif pada layar kecil */
+    @media (max-width: 768px) {
+        .form-group {
+            flex: 1 1 100%; /* Membuat elemen form mengambil seluruh lebar layar pada ukuran kecil */
+        }
+    }
+  </style>
+    @endpush
     <form action="{{ route('blog.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
@@ -97,7 +173,8 @@
     </form>
 
 @push("after-script")
-//ckeditor
+
+<!-- CKeditor -->
 <script type="importmap">
     {
         "imports": {
@@ -126,15 +203,10 @@
         .then( /* ... */ )
         .catch( /* ... */ );
 </script>
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<!-- Additional JS (If needed) -->
+<script src="{{ asset('backsites/js/demo.min.js?1692870487') }}" defer></script>
+<script src="./dist/libs/tinymce/tinymce.min.js?1692870487" defer></script>
 
-    ga('create', 'UA-42755476-1', 'bootstrap-tagsinput.github.io');
-    ga('send', 'pageview');
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>

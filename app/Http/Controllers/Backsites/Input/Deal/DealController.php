@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\Deal;
+use App\Models\Branch;
 use Illuminate\View\View;
 use Exception;
 
@@ -24,34 +25,35 @@ class DealController extends Controller
 
     public function index(Request $request)
     {
+        // Cek apakah ini adalah permintaan AJAX untuk DataTables
         if ($request->ajax()) {
-            $deals = Deal::with('branch')->select('id', 'title', 'deal_type', 'branch_id');
+            $deals = Deal::with('branch')->select(['id', 'title', 'branch_id', 'deal_type', 'updated_at']);
 
             return DataTables::of($deals)
                 ->addIndexColumn()
-                ->addColumn('branch', function($row) {
-                    return $row->branch ? $row->branch->title : 'Cabang Tidak Ditemukan';
+                ->addColumn('branch.title', function ($deal) {
+                    return $deal->branch ? $deal->branch->title : 'Cabang Tidak Ditemukan';
                 })
-                ->addColumn('action', function($row) {
-                    $editUrl = route('deal.edit', $row->id);
-                    $deleteForm = '<form action="' . route('deal.destroy', $row->id) . '" method="POST" style="display:inline;">
-                                    ' . csrf_field() . method_field('DELETE') . '
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">Hapus</button>
-                                </form>';
-                    return '<a href="' . $editUrl . '" class="btn btn-warning btn-sm">Edit</a> ' . $deleteForm;
+                ->addColumn('action', function($deal){
+                    return '<div class="dropdown">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Aksi
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item btn-edit" href="javascript:void(0);" data-url="'. route('deal.edit', $deal->id) .'">Edit</a></li>
+                                    <li><a class="dropdown-item text-danger btn-delete" href="javascript:void(0);" data-url="'. route('deal.destroy', $deal->id) .'">Hapus</a></li>
+                                </ul>
+                            </div>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
 
-        return view('pages.backsites.input.Deal.index');
+        // Jika bukan permintaan AJAX, kembalikan ke tampilan dengan data yang diperlukan
+        $branches = Branch::all(); // Asumsikan Anda memerlukan daftar cabang untuk modal edit
+        return view('pages.backsites.input.Deal.index', compact('branches'));
     }
 
-    // public function getDealsData()
-    // {
-    //     // Memanggil method dari service
-    //     return $this->dealService->getDealsDataTables();
-    // }
 
     public function create(): View
     {
@@ -78,29 +80,36 @@ class DealController extends Controller
         }
     }
 
-    public function edit($id): View
+    public function edit($id)
     {
-        $deal = $this->dealService->findDealById($id);
-        $branches = $this->dealService->getBranches();
-        $carBrands = $this->dealService->getCarBrands();
-        $dealTypes = $this->dealTypes;
+        $deal = Deal::with('branch')->findOrFail($id);
 
-        return view('pages.backsites.input.Deal._deal', compact('deal', 'branches', 'carBrands', 'dealTypes'));
+        return response()->json($deal); // Mengembalikan data deal sebagai JSON
     }
 
-    public function update(DealRequest $request, $id): RedirectResponse
+
+    public function update(Request $request, $id)
     {
-        try {
-            $title = $this->generateTitle($request);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'deal_type' => 'required|string',
+            'branch_id' => 'required|exists:branches,id', // Pastikan branch_id ada di tabel branches
+        ]);
 
-            // Update deal dengan judul yang dihasilkan
-            $this->dealService->updateDeal($request, $id, $title);
+        $deal = Deal::find($id);
 
-            return redirect()->route('deal.index')->with('success', 'Akad berhasil diperbarui');
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui akad: ' . $e->getMessage());
+        if ($deal) {
+            $deal->title = $request->input('title');
+            $deal->deal_type = $request->input('deal_type');
+            $deal->branch_id = $request->input('branch_id');
+            $deal->save();
+
+            return response()->json(['message' => 'Data berhasil diperbarui']);
+        } else {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
     }
+
 
     public function destroy($id): RedirectResponse
     {

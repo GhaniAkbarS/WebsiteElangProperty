@@ -1,4 +1,77 @@
 <x-back-app-layout>
+    @push('after-style')
+    <!-- Google Fonts -->
+<style>
+    @import url('https://rsms.me/inter/inter.css');
+    :root {
+        --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+    }
+    body {
+        font-feature-settings: "cv03", "cv04", "cv11";
+    }
+  </style>
+
+  <!-- CKEditor Styling -->
+  <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
+  <style>
+    /* Mengatur tinggi editor CKEditor */
+    .ck-editor__editable {
+        min-height: 300px;
+    }
+  </style>
+    <!-- Table Styling -->
+<style>
+    /* Mengatur batas tabel */
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    /* Mengatur batas untuk sel tabel */
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+  </style>
+
+  <!-- Form Layout Styling -->
+  <style>
+    .form-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        flex: 1 1 calc(50% - 20px); /* Membuat form-group mengambil 50% lebar dengan jarak antar item */
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form-group input[type="file"] {
+        padding: 5px;
+    }
+
+    /* Agar tampilan tetap responsif pada layar kecil */
+    @media (max-width: 768px) {
+        .form-group {
+            flex: 1 1 100%; /* Membuat elemen form mengambil seluruh lebar layar pada ukuran kecil */
+        }
+    }
+  </style>
+    @endpush
     <form action="{{ route('deal.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-container">

@@ -122,5 +122,9 @@
             </div>
         </div>
     </div>
-
 </div>
+
+(@push('after-script')
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzZV7zIMU21b1LTAhYa9t6JU4Fea1Sc5mpJHVRjIEiPv" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuNc5JkMmJ3e6z2q49U9lGc7r7z2HgJ3z5MLXKI5gZ8oPkFTE9iG5feTxIjDhBy" crossorigin="anonymous"></script>
+@endpush)

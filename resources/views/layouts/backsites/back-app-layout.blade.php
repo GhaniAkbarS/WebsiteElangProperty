@@ -4,7 +4,6 @@
 * @version 1.0.0-beta20
 * @link https://tabler.io
 * Copyright 2018-2023 The Tabler Authors
-* Copyright 2018-2023 codecalm.net Paweł Kuna
 * Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
 -->
 <html lang="en">
@@ -15,12 +14,9 @@
 
     @include('includes.backsites.style')
 
-    @stack('before-style')
-
+    @stack('after-style')
   </head>
-  <body >
-
-
+  <body>
     <div class="page">
         <x-back-nav-layout></x-back-nav-layout>
         <div class="page-wrapper">
@@ -63,14 +59,16 @@
           <div class="page-body">
             <div class="container-xl">
               <div class="row row-deck row-cards">
+                {{-- MEMANGGIL INDEX BLADE --}}
+                {{ $slot ?? 'TIDAK ADA HALAMAN' }}
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
 
-                {{-- MEMANGGIL INDEX BLADE  --}}
-                {{ $slot ??'TIDAK ADA HALAMAN'  }}
-
-      {{-- klo ad berubah sebelum letak sini --}}
     @stack('before-script')
     @include('includes.backsites.script')
     @stack('after-script')
-    {{-- klo  --}}
-    </body>
+  </body>
 </html>
