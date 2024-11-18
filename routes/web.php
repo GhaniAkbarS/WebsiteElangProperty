@@ -34,6 +34,9 @@ Route::prefix('backsites')->group(function(){
     Route::resource('deal', DealController::class)->names('deal');
 });
 
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
+});
 // Route::get('/blogs', [App\Http\Controllers\Backsites\Input\Blog\BlogController::class, 'frontIndex'])->name('blog.frontIndex');
 
 

@@ -78,7 +78,7 @@
                                 <td>{{ $slide->link ?? 'No Link' }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                        <button class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                             Aksi
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
@@ -152,3 +152,8 @@
         </div>
     </div>
 </div>
+
+@push('after-script')
+<!-- Tambahkan Script Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@endpush

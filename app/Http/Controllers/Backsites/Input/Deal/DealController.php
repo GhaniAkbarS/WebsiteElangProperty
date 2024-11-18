@@ -80,43 +80,77 @@ class DealController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $deal = Deal::findOrFail($id); // atau Deal::find($id) jika Anda ingin menangani error manual
+        return view('path.ke.view.detail', compact('deal'));
+    }
+
     public function edit($id)
     {
-        $deal = Deal::with('branch')->findOrFail($id);
-
-        return response()->json($deal); // Mengembalikan data deal sebagai JSON
+        $deal = Deal::find($id);
+        if (!$deal) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        return response()->json($deal); // Mengembalikan data deal ke view edit.blade.php
     }
 
 
     public function update(Request $request, $id)
     {
+        // Validasi data yang masuk
         $request->validate([
             'title' => 'required|string|max:255',
             'deal_type' => 'required|string',
             'branch_id' => 'required|exists:branches,id', // Pastikan branch_id ada di tabel branches
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Validasi gambar (opsional)
         ]);
 
-        $deal = Deal::find($id);
+        // Ambil data deal berdasarkan ID
+        $deal = Deal::findOrFail($id); // Menggunakan findOrFail untuk otomatis menangani data tidak ditemukan
 
-        if ($deal) {
-            $deal->title = $request->input('title');
-            $deal->deal_type = $request->input('deal_type');
-            $deal->branch_id = $request->input('branch_id');
-            $deal->save();
+        // Mengupdate data yang ada
+        $deal->title = $request->input('title');
+        $deal->deal_type = $request->input('deal_type');
+        $deal->branch_id = $request->input('branch_id');
 
-            return response()->json(['message' => 'Data berhasil diperbarui']);
-        } else {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        // Cek apakah ada gambar yang diunggah
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($deal->image && file_exists(storage_path('app/public/' . $deal->image))) {
+                unlink(storage_path('app/public/' . $deal->image));
+            }
+
+            // Simpan gambar baru dan dapatkan path-nya
+            $imagePath = $request->file('image')->store('deals', 'public');
+            $deal->image = $imagePath; // Menyimpan path gambar
         }
+
+        // Simpan perubahan ke database
+        $deal->save();
+
+        // Mengembalikan response sukses
+        return redirect()->route('deal.index')->with('success', 'Deal berhasil diperbarui');
     }
 
 
-    public function destroy($id): RedirectResponse
+    public function destroy($id)
     {
         try {
             $this->dealService->deleteDeal($id);
+
+            // Jika permintaan berasal dari AJAX
+            if (request()->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Akad berhasil dihapus']);
+            }
+
+            // Jika permintaan bukan dari AJAX
             return redirect()->route('deal.index')->with('success', 'Akad berhasil dihapus');
         } catch (Exception $e) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menghapus akad: ' . $e->getMessage()], 500);
+            }
+
             return redirect()->back()->with('error', 'Gagal menghapus akad: ' . $e->getMessage());
         }
     }
