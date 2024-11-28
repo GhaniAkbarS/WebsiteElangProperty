@@ -117,7 +117,6 @@
                             @enderror
                         </div>
 
-
                         <!-- Input Image -->
                         <div class="form-group mb-3">
                             <label for="image"  >Image Upload</label>

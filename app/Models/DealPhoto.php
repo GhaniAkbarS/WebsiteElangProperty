@@ -9,15 +9,17 @@ class DealPhoto extends Model
 {
     use HasFactory;
 
-    protected $table = 'ep_deal_photo';
+    protected $table = 'ep_deal_photo'; // Nama tabel
 
     protected $fillable = [
         'deal_id',
-        'image'
+        'image' // Kolom yang dapat diisi
     ];
 
-    //mendefinisikan relasi ke ep-deal
-    public function photos(){
-        return $this->hasMany(DealPhoto::class, 'deal_id');
+    // Relasi ke tabel ep_deal (belongsTo)
+    public function deal()
+    {
+        return $this->belongsTo(Deal::class, 'deal_id', 'id');
+        // deal_id adalah foreign key, id adalah primary key di tabel ep_deal
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backsites\Input\Deal;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\DealRequest;
 use App\Services\DealService;
 use Illuminate\Http\RedirectResponse;
@@ -10,6 +11,8 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\Deal;
 use App\Models\Branch;
+use App\Models\CarBrand;
+use App\Models\DealPhoto;
 use Illuminate\View\View;
 use Exception;
 
@@ -25,23 +28,22 @@ class DealController extends Controller
 
     public function index(Request $request)
     {
-        // Cek apakah ini adalah permintaan AJAX untuk DataTables
         if ($request->ajax()) {
             $deals = Deal::with('branch')->select(['id', 'title', 'branch_id', 'deal_type', 'updated_at']);
 
             return DataTables::of($deals)
                 ->addIndexColumn()
-                ->addColumn('branch.title', function ($deal) {
+                ->addColumn('branch', function ($deal) {
                     return $deal->branch ? $deal->branch->title : 'Cabang Tidak Ditemukan';
                 })
-                ->addColumn('action', function($deal){
+                ->addColumn('action', function ($deal) {
                     return '<div class="dropdown">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Aksi
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item btn-edit" href="javascript:void(0);" data-url="'. route('deal.edit', $deal->id) .'">Edit</a></li>
-                                    <li><a class="dropdown-item text-danger btn-delete" href="javascript:void(0);" data-url="'. route('deal.destroy', $deal->id) .'">Hapus</a></li>
+                                    <li><a class="dropdown-item btn-edit" href="javascript:void(0);" data-url="' . route('deal.edit', $deal->id) . '">Edit</a></li>
+                                    <li><a class="dropdown-item text-danger btn-delete" href="javascript:void(0);" data-url="' . route('deal.destroy', $deal->id) . '">Hapus</a></li>
                                 </ul>
                             </div>';
                 })
@@ -49,10 +51,11 @@ class DealController extends Controller
                 ->make(true);
         }
 
-        // Jika bukan permintaan AJAX, kembalikan ke tampilan dengan data yang diperlukan
-        $branches = Branch::all(); // Asumsikan Anda memerlukan daftar cabang untuk modal edit
+        // Kembalikan daftar cabang untuk tampilan
+        $branches = Branch::all();
         return view('pages.backsites.input.Deal.index', compact('branches'));
     }
+
 
 
     public function create(): View
@@ -64,15 +67,27 @@ class DealController extends Controller
         return view('pages.backsites.input.Deal._deal', compact('branches', 'carBrands', 'dealTypes'));
     }
 
+
     public function store(DealRequest $request): RedirectResponse
     {
-        // Ini akan menampilkan semua data yang dikirim dari form
         try {
-            // Menghasilkan judul berdasarkan kondisi
-            $title = $this->generateTitle($request);
+            // Simpan data utama deal
+            $deal = Deal::create([
+                'title' => $request->input('title'),
+                'deal_type' => $request->input('deal_type'),
+                'branch_id' => $request->input('branch_id'),
+                'image' => $request->hasFile('image')
+                    ? $request->file('image')->store('deals', 'public')
+                    : null, // Simpan thumbnail jika ada
+            ]);
 
-            // Simpan deal dengan judul yang dihasilkan
-            $this->dealService->storeDeal($request, $title);
+            // Simpan foto akad jika ada
+            if ($request->hasFile('photos')) {
+                foreach ($request->file('photos') as $photo) {
+                    $photoPath = $photo->store('deal_photo', 'public');
+                    $deal->photos()->create(['file' => $photoPath]);
+                }
+            }
 
             return redirect()->route('deal.index')->with('success', 'Akad berhasil disimpan');
         } catch (Exception $e) {
@@ -82,76 +97,77 @@ class DealController extends Controller
 
     public function show($id)
     {
-        $deal = Deal::findOrFail($id); // atau Deal::find($id) jika Anda ingin menangani error manual
-        return view('path.ke.view.detail', compact('deal'));
+        $deal = $this->dealService->findDealById($id); // atau Deal::find($id) jika Anda ingin menangani error manual
+        return view('pages.backsites.input.deal.show', compact('deal'));
     }
 
     public function edit($id)
     {
-        $deal = Deal::find($id);
-        if (!$deal) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
-        }
-        return response()->json($deal); // Mengembalikan data deal ke view edit.blade.php
+        $deal = Deal::with('photos')->findOrFail($id);
+        $branches = Branch::all();
+        $dealTypes = $this->dealTypes;
+        $carBrands = CarBrand::all();
+
+        return view('pages.backsites.input.deal.edit', compact('deal', 'branches', 'dealTypes', 'carBrands'));
     }
 
-
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
-        // Validasi data yang masuk
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'deal_type' => 'required|string',
-            'branch_id' => 'required|exists:branches,id', // Pastikan branch_id ada di tabel branches
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Validasi gambar (opsional)
-        ]);
+        try {
+            $deal = Deal::findOrFail($id);
 
-        // Ambil data deal berdasarkan ID
-        $deal = Deal::findOrFail($id); // Menggunakan findOrFail untuk otomatis menangani data tidak ditemukan
+            $request->validate([
+                'title' => 'nullable|string|max:255',
+                'deal_type' => 'nullable|string',
+                'branch_id' => 'nullable|exists:branches,id',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+                'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
 
-        // Mengupdate data yang ada
-        $deal->title = $request->input('title');
-        $deal->deal_type = $request->input('deal_type');
-        $deal->branch_id = $request->input('branch_id');
+            // Update data deal
+            $deal->update($request->only('title', 'deal_type', 'branch_id'));
 
-        // Cek apakah ada gambar yang diunggah
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($deal->image && file_exists(storage_path('app/public/' . $deal->image))) {
-                unlink(storage_path('app/public/' . $deal->image));
+            // Menyimpan foto ke storage
+            if ($request->hasFile('photo')) {
+                $path = $request->file('photo')->store('photos', 'public');
+                $deal->photo = $path;
+                $deal->save();
             }
 
-            // Simpan gambar baru dan dapatkan path-nya
-            $imagePath = $request->file('image')->store('deals', 'public');
-            $deal->image = $imagePath; // Menyimpan path gambar
+            return redirect()->back()->with('success', 'Foto berhasil diunggah.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui data deal: ' . $e->getMessage());
         }
-
-        // Simpan perubahan ke database
-        $deal->save();
-
-        // Mengembalikan response sukses
-        return redirect()->route('deal.index')->with('success', 'Deal berhasil diperbarui');
     }
-
 
     public function destroy($id)
     {
         try {
-            $this->dealService->deleteDeal($id);
+            // Cari data foto berdasarkan ID
+            $photo = DealPhoto::findOrFail($id);
+
+            // Hapus file dari storage
+            if (file_exists(storage_path('app/public/deal_photos/' . $photo->file))) {
+                unlink(storage_path('app/public/deal_photos/' . $photo->file));
+            }
+
+            // Hapus data dari database
+            $photo->delete();
 
             // Jika permintaan berasal dari AJAX
             if (request()->ajax()) {
-                return response()->json(['success' => true, 'message' => 'Akad berhasil dihapus']);
+                return response()->json(['success' => true, 'message' => 'Foto akad berhasil dihapus']);
             }
 
             // Jika permintaan bukan dari AJAX
-            return redirect()->route('deal.index')->with('success', 'Akad berhasil dihapus');
+            return redirect()->back()->with('success', 'Foto akad berhasil dihapus');
         } catch (Exception $e) {
+            // Jika terjadi kesalahan
             if (request()->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Gagal menghapus akad: ' . $e->getMessage()], 500);
+                return response()->json(['success' => false, 'message' => 'Gagal menghapus foto akad: ' . $e->getMessage()], 500);
             }
 
-            return redirect()->back()->with('error', 'Gagal menghapus akad: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus foto akad: ' . $e->getMessage());
         }
     }
 
@@ -165,4 +181,32 @@ class DealController extends Controller
             return "Akad {$request->deal_type} - Unit - Cabang {$request->branch_id}";
         }
     }
+
+    // Method untuk upload foto akad
+    public function storePhoto(Request $request, Deal $deal)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Simpan file ke storage
+        $path = $request->file('photo')->store('photos', 'public');
+
+        // Simpan informasi ke database
+        $deal->photos()->create(['file' => $path]);
+
+        return redirect()->back()->with('success', 'Foto berhasil diunggah.');
+    }
+
+    public function destroyPhoto(DealPhoto $photo)
+    {
+        // Hapus file dari storage
+        Storage::disk('public')->delete($photo->file);
+
+        // Hapus dari database
+        $photo->delete();
+
+        return redirect()->back()->with('success', 'Foto berhasil dihapus.');
+    }
+
 }

@@ -174,12 +174,11 @@
                         searchable: false,
                         render: function(data, type, row) {
                             let editUrl = "{{ route('deal.edit', ':id') }}".replace(':id', row.id);
-                            let deleteUrl = "{{ route('deal.destroy', ':id') }}".replace(':id', row.id);
                             return `
-                                <button class="btn btn-sm btn-primary btn-edit" data-url="${editUrl}">
+                                <a href="${editUrl}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <button class="btn btn-sm btn-danger btn-delete" data-url="${deleteUrl}">
+                                </a>
+                                <button class="btn btn-sm btn-danger btn-delete" data-url="{{ route('deal.destroy', ':id') }}".replace(':id', row.id)">
                                     <i class="fas fa-trash-alt"></i> Hapus
                                 </button>
                             `;

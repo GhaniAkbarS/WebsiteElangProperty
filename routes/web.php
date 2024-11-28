@@ -27,7 +27,7 @@ Route::get('/', HomeController::class)->name('home');
 // slash atau garis miring itu adalah jika, setelah link nya itu, uri url namanya
 Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
-Route::prefix('backsites')->group(function(){
+Route::prefix('backsites')->group(function () {
     Route::resource('category', CategoryController::class)->names('category');
     Route::resource('slide', SlideController::class)->names('slide');
     Route::resource('blog', BlogController::class)->names('blog');

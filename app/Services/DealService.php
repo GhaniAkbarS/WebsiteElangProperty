@@ -80,25 +80,6 @@ class DealService
         return $this->dealRepository->getAllDeals();
     }
 
-    // public function getDealsDataTables()
-    // {
-    //     $deals = $this->dealRepository->getDealsWithBranch();
-
-    //     return DataTables::of($deals)
-    //         ->addIndexColumn()
-    //         ->addColumn('action', function($row) {
-    //             $editUrl = route('deal.edit', $row->id);
-    //             $deleteForm = '<form action="' . route('deal.destroy', $row->id) . '" method="POST" style="display:inline;">
-    //                 ' . csrf_field() . '
-    //                 ' . method_field('DELETE') . '
-    //                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">Hapus</button>
-    //             </form>';
-    //             return '<a href="' . $editUrl . '" class="btn btn-warning btn-sm">Edit</a> ' . $deleteForm;
-    //         })
-    //         ->rawColumns(['action'])
-    //         ->make(true);
-    // }
-
     public function findDealById($id)
     {
         return $this->dealRepository->findDealById($id);
@@ -114,4 +95,16 @@ class DealService
     {
         return $this->dealRepository->deleteDeal($id);
     }
+
+    public function storeDealPhoto($deal, $photos)
+{
+    // Simpan foto-foto akad
+    foreach ($photos as $photo) {
+        $photoPath = $photo->store('deal_photo', 'public');
+        $deal->photos()->create([
+            'file' => $photoPath,
+        ]);
+    }
+}
+
 }

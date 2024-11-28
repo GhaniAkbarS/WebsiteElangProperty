@@ -9,31 +9,22 @@
     body {
         font-feature-settings: "cv03", "cv04", "cv11";
     }
-  </style>
 
-  <!-- CKEditor Styling -->
-  <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
-  <style>
-    /* Mengatur tinggi editor CKEditor */
+    /* CKEditor Styling */
     .ck-editor__editable {
         min-height: 300px;
     }
-  </style>
-    <!-- Table Styling -->
-<style>
-    /* Mengatur batas tabel */
+
+    /* Table Styling */
     .table-bordered {
         border: 1px solid #dee2e6;
     }
-
-    /* Mengatur batas untuk sel tabel */
-    .table-bordered th, .table-bordered td {
+    .table-bordered th,
+    .table-bordered td {
         border: 1px solid #dee2e6;
     }
-  </style>
 
-  <!-- Form Layout Styling -->
-  <style>
+    /* Form Container */
     .form-container {
         display: flex;
         flex-wrap: wrap;
@@ -41,134 +32,318 @@
         justify-content: space-between;
     }
 
+    .form-column {
+        flex: 1 1 calc(50% - 10px);
+    }
+
+    /* Form Group */
     .form-group {
-        flex: 1 1 calc(50% - 20px); /* Membuat form-group mengambil 50% lebar dengan jarak antar item */
         margin-bottom: 20px;
     }
 
     .form-group label {
-        display: block;
-        margin-bottom: 8px;
         font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
     }
 
     .form-group input,
     .form-group select {
         width: 100%;
         padding: 8px;
-        border: 1px solid #ddd;
+        border: 1px solid #ccc;
         border-radius: 4px;
     }
 
-    .form-group input[type="file"] {
-        padding: 5px;
+    /* Form Footer */
+    .form-footer {
+        margin-top: 20px;
+        text-align: right;
     }
 
-    /* Agar tampilan tetap responsif pada layar kecil */
+    /* Responsif */
     @media (max-width: 768px) {
-        .form-group {
-            flex: 1 1 100%; /* Membuat elemen form mengambil seluruh lebar layar pada ukuran kecil */
+        .form-column {
+            flex: 1 1 100%;
+        }
+
+        .form-footer {
+            text-align: center;
         }
     }
+
+    /* Unisharp */
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+
+    .img-thumbnail {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
 </style>
 
-<form action="{{ route('deal.update', $deal->id) }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
-    <div class="form-container">
+<div class="page-wrapper">
+    <!-- Page Header -->
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <!-- Page Pre-title -->
+                    <div class="page-pretitle">Input</div>
+                    <h2 class="page-title">Akad</h2>
+                </div>
 
-        <!-- Input Cabang -->
-        <div class="form-group">
-            <label for="branch_id" class="block text-sm font-medium text-gray-700">Cabang</label>
-            <select name="branch_id" id="branch_id" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-                <option value="">Pilih Cabang</option>
-                @foreach($branches as $branch)
-                    <option value="{{ $branch->id }}" {{ $deal->branch_id == $branch->id ? 'selected' : '' }}>{{ $branch->title }}</option>
-                @endforeach
-            </select>
-            @error('branch_id')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
+                <!-- Page Title Actions -->
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                        <!-- Button for Larger Screens -->
+                        <a href="{{ route('deal.index') }}" class="btn btn-primary d-none d-sm-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                <path d="M9 12h6" />
+                                <path d="M12 9v6" />
+                            </svg>
+                            Tambah Data Akad
+                        </a>
 
-        <!-- Input Tanggal Akad -->
-        <div class="form-group">
-            <label for="deal_date" class="block text-sm font-medium text-gray-700">Tanggal Akad</label>
-            <input type="date" name="deal_date" id="deal_date" value="{{ $deal->deal_date }}" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-            @error('deal_date')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Input Jenis Akad -->
-        <div class="form-group">
-            <label for="deal_type" class="block text-sm font-medium text-gray-700">Jenis Akad</label>
-            <select name="deal_type" id="deal_type" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-                <option value="">Pilih Jenis Akad</option>
-                @foreach($dealTypes as $dealType)
-                    <option value="{{ $dealType }}" {{ $deal->deal_type == $dealType ? 'selected' : '' }}>{{ $dealType }}</option>
-                @endforeach
-            </select>
-            @error('deal_type')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Input Thumbnail (Gambar) -->
-        <div class="form-group">
-            <label for="image" class="block text-sm font-medium text-gray-700">Thumbnail (Gambar)</label>
-            <input type="file" name="image" id="image" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-            @if($deal->image)
-                <img src="{{ asset('storage/' . $deal->image) }}" alt="Thumbnail" class="mt-2" width="100">
-            @endif
-            @error('image')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Input Merek Mobil -->
-        <div id="carBrandInput" class="form-group" style="{{ $deal->car_brand ? '' : 'display: none;' }}">
-            <label for="car_brand" class="block text-sm font-medium text-gray-700">Merek Mobil</label>
-            <select name="car_brand" id="car_brand" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-                <option value="">Pilih Merek Mobil</option>
-                @foreach($carBrands as $carBrand)
-                    <option value="{{ $carBrand->title }}" {{ $deal->car_brand == $carBrand->title ? 'selected' : '' }}>{{ $carBrand->title }}</option>
-                @endforeach
-            </select>
-            @error('car_brand')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Input Jenis Mobil -->
-        <div id="carTypeInput" class="form-group" style="{{ $deal->car_type ? '' : 'display: none;' }}">
-            <label for="car_type" class="block text-sm font-medium text-gray-700">Jenis Mobil</label>
-            <input type="text" name="car_type" id="car_type" value="{{ $deal->car_type }}" placeholder="Masukkan jenis mobil" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-            @error('car_type')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Input Keyword (Tag) -->
-        <div class="mb-4">
-            <label for="keyword" class="block text-sm font-medium text-gray-700">Keyword (Tag)</label>
-            <input type="text" name="keyword" id="keyword" value="{{ $deal->keyword }}" placeholder="Masukkan keyword" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md" data-role="tagsinput">
-            @error('keyword')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Submit Button -->
-        <div class="form-group text-right">
-            <button type="submit" class="btn btn-primary">Update</button>
+                        <!-- Button for Smaller Screens -->
+                        <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modalAdd" aria-label="Tambah Data Akad">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                <path d="M9 12h6" />
+                                <path d="M12 9v6" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</form>
+
+    <!-- Edit Akad Form -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Kolom Kiri -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-3">Form Edit Akad</h4>
+                        <form action="{{ route('deal.update', $deal->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Edit Title -->
+                            <div class="mb-4">
+                                <label for="title" class="block text-sm font-medium text-gray-700">Judul</label>
+                                <input
+                                    type="text"
+                                    name="title"
+                                    id="title"
+                                    value="{{ $deal->title }}"
+                                    placeholder="Masukkan judul"
+                                    class="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-md"
+                                >
+                                @error('title')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Input Cabang -->
+                            <div class="form-group mb-3">
+                                <label for="branch_id">Cabang</label>
+                                <select name="branch_id" id="branch_id" class="form-control">
+                                    <option value="">Pilih Cabang</option>
+                                    @foreach($branches as $branch)
+                                        <option value="{{ $branch->id }}" {{ $deal->branch_id == $branch->id ? 'selected' : '' }}>
+                                            {{ $branch->title }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('branch_id')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Input Tanggal Akad -->
+                            <div class="form-group mb-3">
+                                <label for="deal_date">Tanggal Akad</label>
+                                <input type="date" name="deal_date" id="deal_date" value="{{ old('deal_date', $deal->deal_date) }}" class="form-control">
+                                @error('deal_date')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+
+                            <!-- Submit Button -->
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-3">Merek dan Jenis Mobil</h4>
+                        <form>
+                            <!-- Input Merek Mobil -->
+                            <div id="carBrandInput" class="form-group" style="{{ $deal->car_brand ? '' : 'display: none;' }}">
+                                <label for="car_brand">Merek Mobil</label>
+                                <select name="car_brand" id="car_brand" class="form-control">
+                                    <option value="">Pilih Merek Mobil</option>
+                                    @foreach($carBrands as $carBrand)
+                                        <option value="{{ $carBrand->title }}" {{ $deal->car_brand == $carBrand->title ? 'selected' : '' }}>{{ $carBrand->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('car_brand')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Input Jenis Mobil -->
+                            <div id="carTypeInput" class="form-group" style="{{ $deal->car_type ? '' : 'display: none;' }}">
+                                <label for="car_type">Jenis Mobil</label>
+                                <input type="text" name="car_type" id="car_type" value="{{ old('car_type', $deal->car_type) }}" placeholder="Masukkan jenis mobil" class="form-control">
+                                @error('car_type')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Input Jenis Akad -->
+                            <div class="form-group mb-3">
+                                <label for="deal_type">Jenis Akad</label>
+                                <select name="deal_type" id="deal_type" class="form-control">
+                                    <option value="">Pilih Jenis Akad</option>
+                                    @foreach($dealTypes as $dealType)
+                                        <option value="{{ $dealType }}" {{ $deal->deal_type == $dealType ? 'selected' : '' }}>{{ $dealType }}</option>
+                                    @endforeach
+                                </select>
+                                @error('deal_type')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Input Thumbnail (Gambar) -->
+                            <div class="form-group mb-3">
+                                <label for="image">Thumbnail (Gambar)</label>
+                                <input type="file" name="image" id="image" class="form-control-file">
+                                @if($deal->image)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/' . $deal->image) }}" alt="Thumbnail" class="img-fluid" width="100">
+                                    </div>
+                                @endif
+                                @error('image')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Input Keyword (Tag) -->
+                            <div class="form-group mb-3">
+                                <label for="keyword">Keyword (Tag)</label>
+                                <input type="text" name="keyword" id="keyword" value="{{ old('keyword', $deal->keyword) }}" placeholder="Masukkan keyword" class="form-control" data-role="tagsinput">
+                                @error('keyword')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Kolom 1: Form Upload -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Unggah Foto Akad</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('deal.update', $deal->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')  <!-- Menyatakan bahwa form ini menggunakan metode PUT -->
+
+                                <!-- Input Foto Akad dengan LFM -->
+                                <div class="mb-3">
+                                    <label for="photo" class="form-label">Unggah Foto Akad</label>
+                                    <div class="input-group">
+                                        <input id="photo" class="form-control" type="text" name="photo" readonly>
+                                        <button id="lfm" data-input="photo" data-preview="photo_preview" class="btn btn-primary">
+                                            <i class="fa fa-picture-o"></i> Pilih
+                                        </button>
+                                    </div>
+                                    <img id="photo_preview" class="mt-3 img-thumbnail" style="max-height: 150px;">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Unggah</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom 2: Daftar Foto Akad -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Daftar Foto Akad</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @forelse($deal->photos as $photo)
+                                    <div class="col-md-6 mb-3">
+                                        <img src="{{ asset('storage/' . $photo->file) }}" alt="Foto Akad"
+                                            class="img-thumbnail w-100" style="max-height: 150px; object-fit: cover;">
+                                        <form action="{{ route('deal.destroy', $photo->id) }}" method="POST" class="mt-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm w-100">Hapus</button>
+                                        </form>
+                                    </div>
+                                @empty
+                                    <p class="text-muted text-center">Tidak ada foto akad yang diunggah.</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
 
 @push("after-script")
-//Deal input
+    <!-- Untuk unisharp -->
+    <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
+    <script>
+        $('#lfm').filemanager('image'); // Inisialisasi file manager untuk input image
+    </script>
 
-<!-- JavaScript untuk Menampilkan/Menyembunyikan Input Berdasarkan Jenis Akad -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript untuk Menampilkan/Menyembunyikan Input Berdasarkan Jenis Akad -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const dealType = document.getElementById('deal_type');
@@ -194,6 +369,5 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 @endpush
 </x-back-app-layout>
