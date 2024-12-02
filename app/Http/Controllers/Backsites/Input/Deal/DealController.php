@@ -33,7 +33,7 @@ class DealController extends Controller
 
             return DataTables::of($deals)
                 ->addIndexColumn()
-                ->addColumn('branch', function ($deal) {
+                ->addColumn('branch.title', function ($deal) {
                     return $deal->branch ? $deal->branch->title : 'Cabang Tidak Ditemukan';
                 })
                 ->addColumn('action', function ($deal) {
@@ -56,8 +56,6 @@ class DealController extends Controller
         return view('pages.backsites.input.Deal.index', compact('branches'));
     }
 
-
-
     public function create(): View
     {
         $branches = $this->dealService->getBranches();
@@ -67,31 +65,20 @@ class DealController extends Controller
         return view('pages.backsites.input.Deal._deal', compact('branches', 'carBrands', 'dealTypes'));
     }
 
-
     public function store(DealRequest $request): RedirectResponse
     {
         try {
-            // Simpan data utama deal
-            $deal = Deal::create([
-                'title' => $request->input('title'),
-                'deal_type' => $request->input('deal_type'),
-                'branch_id' => $request->input('branch_id'),
-                'image' => $request->hasFile('image')
-                    ? $request->file('image')->store('deals', 'public')
-                    : null, // Simpan thumbnail jika ada
-            ]);
+            // Simpan data akad menggunakan service
+            $deal = $this->dealService->storeDeal($request);
 
-            // Simpan foto akad jika ada
+            // Simpan foto-foto akad menggunakan service
             if ($request->hasFile('photos')) {
-                foreach ($request->file('photos') as $photo) {
-                    $photoPath = $photo->store('deal_photo', 'public');
-                    $deal->photos()->create(['file' => $photoPath]);
-                }
+                $this->dealService->storeDealPhoto($deal, $request->file('photos'));
             }
 
             return redirect()->route('deal.index')->with('success', 'Akad berhasil disimpan');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menyimpan akad: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan akad: ' . $e->getMessage());
         }
     }
 
@@ -183,27 +170,33 @@ class DealController extends Controller
     }
 
     // Method untuk upload foto akad
-    public function storePhoto(Request $request, Deal $deal)
+    public function uploadPhoto(Request $request, $dealId)
     {
+        // Validasi
         $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
         ]);
 
-        // Simpan file ke storage
-        $path = $request->file('photo')->store('photos', 'public');
+        // Upload File
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $path = $file->store('deals/photos', 'public'); // Simpan ke storage/app/public/deals/photos
 
-        // Simpan informasi ke database
-        $deal->photos()->create(['file' => $path]);
+            // Simpan data ke database (opsional)
+            $deal = Deal::findOrFail($dealId);
+            $deal->photos()->create([
+                'image' => $path,
+            ]);
+        }
 
-        return redirect()->back()->with('success', 'Foto berhasil diunggah.');
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Foto berhasil diunggah!');
     }
 
-    public function destroyPhoto(DealPhoto $photo)
-    {
-        // Hapus file dari storage
-        Storage::disk('public')->delete($photo->file);
 
-        // Hapus dari database
+    public function destroyPhoto(Deal $deal, $photoId)
+    {
+        $photo = DealPhoto::findOrFail($photoId);
         $photo->delete();
 
         return redirect()->back()->with('success', 'Foto berhasil dihapus.');

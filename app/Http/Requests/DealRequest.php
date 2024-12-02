@@ -24,7 +24,7 @@ class DealRequest extends FormRequest
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'keyword' => 'nullable|string',
             'content' => 'nullable|string',
-            'deal_photos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'deal_photos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 

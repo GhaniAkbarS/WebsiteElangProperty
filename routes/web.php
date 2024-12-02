@@ -32,7 +32,13 @@ Route::prefix('backsites')->group(function () {
     Route::resource('slide', SlideController::class)->names('slide');
     Route::resource('blog', BlogController::class)->names('blog');
     Route::resource('deal', DealController::class)->names('deal');
+
+    // Tambahkan rute upload foto di sini
+    Route::post('deal/{deal}/photo', [DealController::class, 'uploadPhoto'])->name('deal.photo.upload');
+    //Untuk delete foto
+    Route::delete('/deal/{deal}/photo/{photo}', [DealController::class, 'destroyPhoto'])->name('deal.photo.destroy');
 });
+
 
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();

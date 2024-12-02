@@ -204,6 +204,20 @@
                     <div class="card-body">
                         <h4 class="mb-3">Merek dan Jenis Mobil</h4>
                         <form>
+                            <!-- Menampilkan foto thumbnail -->
+                            <div class="form-group">
+                                <label for="image" class="block text-sm font-medium text-gray-700">Thumbnail (Gambar)</label>
+                                <input type="file" name="image" id="image" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
+                                @if ($deal->image)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/' . $deal->image) }}" alt="Thumbnail" class="w-32 h-32 object-cover">
+                                    </div>
+                                @endif
+                                @error('image')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Input Merek Mobil -->
                             <div id="carBrandInput" class="form-group" style="{{ $deal->car_brand ? '' : 'display: none;' }}">
                                 <label for="car_brand">Merek Mobil</label>
@@ -275,30 +289,35 @@
 
             <div class="row">
                 <!-- Kolom 1: Form Upload -->
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Unggah Foto Akad</h4>
-                        </div>
-                        <div class="card-body">
-                            <form action="{{ route('deal.update', $deal->id) }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                @method('PUT')  <!-- Menyatakan bahwa form ini menggunakan metode PUT -->
-
-                                <!-- Input Foto Akad dengan LFM -->
-                                <div class="mb-3">
-                                    <label for="photo" class="form-label">Unggah Foto Akad</label>
-                                    <div class="input-group">
-                                        <input id="photo" class="form-control" type="text" name="photo" readonly>
-                                        <button id="lfm" data-input="photo" data-preview="photo_preview" class="btn btn-primary">
-                                            <i class="fa fa-picture-o"></i> Pilih
-                                        </button>
-                                    </div>
-                                    <img id="photo_preview" class="mt-3 img-thumbnail" style="max-height: 150px;">
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Unggah Foto Akad</h4>
                                 </div>
+                                <div class="card-body">
+                                    <form action="{{ route('deal.photo.upload', $deal->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
 
-                                <button type="submit" class="btn btn-primary">Unggah</button>
-                            </form>
+                                        <!-- Input Foto Akad -->
+                                        <div class="input-group mb-3">
+                                            <input id="thumbnail" class="form-control" type="file" name="photo" accept="image/*" required>
+                                            <button type="button" id="previewButton" class="btn btn-primary">
+                                                <i class="fa fa-eye"></i> Preview
+                                            </button>
+                                        </div>
+
+                                        <!-- Preview Foto -->
+                                        <div id="holder" style="margin-top:15px;max-height:150px;">
+                                            <img id="previewImage" class="img-thumbnail d-none" style="max-height: 150px; object-fit: cover;">
+                                        </div>
+
+                                        <!-- Tombol Unggah -->
+                                        <button type="submit" class="btn btn-primary w-100 mt-3">Unggah</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -312,25 +331,22 @@
                         <div class="card-body">
                             <div class="row">
                                 @forelse($deal->photos as $photo)
-                                    <div class="col-md-6 mb-3">
-                                        <img src="{{ asset('storage/' . $photo->file) }}" alt="Foto Akad"
-                                            class="img-thumbnail w-100" style="max-height: 150px; object-fit: cover;">
-                                        <form action="{{ route('deal.destroy', $photo->id) }}" method="POST" class="mt-2">
+                                    <div class="col-6 mb-3">
+                                        <img src="{{ asset('/' . $photo->file) }}" alt="Foto Akad" class="img-thumbnail" style="max-height: 150px; max-width: 100%; object-fit: cover;">
+                                        <form action="{{ route('deal.photo.destroy', [$deal->id, $photo->id]) }}" method="POST" class="mt-2">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm w-100">Hapus</button>
                                         </form>
                                     </div>
                                 @empty
-                                    <p class="text-muted text-center">Tidak ada foto akad yang diunggah.</p>
+                                    <p class="text-center">Tidak ada foto yang diunggah.</p>
                                 @endforelse
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>
@@ -339,7 +355,7 @@
     <!-- Untuk unisharp -->
     <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
     <script>
-        $('#lfm').filemanager('image'); // Inisialisasi file manager untuk input image
+        $('#lfm').filemanager('image');
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

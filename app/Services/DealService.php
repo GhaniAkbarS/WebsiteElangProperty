@@ -97,14 +97,14 @@ class DealService
     }
 
     public function storeDealPhoto($deal, $photos)
-{
-    // Simpan foto-foto akad
-    foreach ($photos as $photo) {
-        $photoPath = $photo->store('deal_photo', 'public');
-        $deal->photos()->create([
-            'file' => $photoPath,
-        ]);
+    {
+        // Simpan foto-foto akad
+        foreach ($photos as $photo) {
+            $photoPath = $photo->store('deal_photo', 'public');
+            $deal->photos()->create([
+                'file' => $photoPath,
+            ]);
+        }
     }
-}
 
 }

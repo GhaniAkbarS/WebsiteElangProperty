@@ -42,8 +42,7 @@ class Deal extends Model
 
     //relasi ke ep-deal-photo
     public function photos(){
-        return $this->hasMany(DealPhoto::class, 'deal_id', 'id');
-    }
+        return $this->hasMany(DealPhoto::class);    }
 
     public function carBrand()
     {
