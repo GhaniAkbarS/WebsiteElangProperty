@@ -40,9 +40,10 @@ Route::prefix('backsites')->group(function () {
 });
 
 
-Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
-    \UniSharp\LaravelFilemanager\Lfm::routes();
+Route::group(['prefix' => 'filemanager', 'middleware' => ['web']], function() {
+    \UniSharp\LaravelFilemanager\Lfm::routes(); // pastikan ini ada di sini
 });
+
 // Route::get('/blogs', [App\Http\Controllers\Backsites\Input\Blog\BlogController::class, 'frontIndex'])->name('blog.frontIndex');
 
 

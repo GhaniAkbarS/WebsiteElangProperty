@@ -96,15 +96,23 @@ class DealService
         return $this->dealRepository->deleteDeal($id);
     }
 
-    public function storeDealPhoto($deal, $photos)
+    public function uploadDealPhoto($deal, $photo)
     {
-        // Simpan foto-foto akad
-        foreach ($photos as $photo) {
-            $photoPath = $photo->store('deal_photo', 'public');
-            $deal->photos()->create([
-                'file' => $photoPath,
-            ]);
+        // Validasi (opsional, jika validasi dilakukan di luar service, abaikan langkah ini)
+        if (!$photo->isValid() || !in_array($photo->extension(), ['jpeg', 'jpg', 'png', 'gif'])) {
+            throw new \Exception('File tidak valid atau format tidak didukung');
         }
+
+        // Simpan foto ke storage
+        $photoPath = $photo->store('deal_photo', 'public'); // Simpan di folder `public/storage/deal_photo`
+
+        // Simpan referensi ke database
+        $deal->photos()->create([
+            'file' => $photoPath,
+        ]);
+
+        return $photoPath; // Return path jika diperlukan
     }
+
 
 }

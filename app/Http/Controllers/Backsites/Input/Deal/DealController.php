@@ -73,7 +73,7 @@ class DealController extends Controller
 
             // Simpan foto-foto akad menggunakan service
             if ($request->hasFile('photos')) {
-                $this->dealService->storeDealPhoto($deal, $request->file('photos'));
+                $this->dealService->uploadDealPhoto($deal, $request->file('photos'));
             }
 
             return redirect()->route('deal.index')->with('success', 'Akad berhasil disimpan');
@@ -172,27 +172,23 @@ class DealController extends Controller
     // Method untuk upload foto akad
     public function uploadPhoto(Request $request, $dealId)
     {
-        // Validasi
+        // Validasi input
         $request->validate([
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
         ]);
 
-        // Upload File
-        if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $path = $file->store('deals/photos', 'public'); // Simpan ke storage/app/public/deals/photos
-
-            // Simpan data ke database (opsional)
+        try {
+            // Temukan data deal berdasarkan ID
             $deal = Deal::findOrFail($dealId);
-            $deal->photos()->create([
-                'image' => $path,
-            ]);
+
+            // Panggil service untuk upload foto
+            $this->dealService->uploadDealPhoto($deal, $request->file('photo'));
+
+            return redirect()->back()->with('success', 'Foto berhasil diunggah!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengunggah foto: ' . $e->getMessage());
         }
-
-        // Redirect kembali dengan pesan sukses
-        return redirect()->back()->with('success', 'Foto berhasil diunggah!');
     }
-
 
     public function destroyPhoto(Deal $deal, $photoId)
     {

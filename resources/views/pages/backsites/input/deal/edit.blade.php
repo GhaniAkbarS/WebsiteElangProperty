@@ -287,76 +287,73 @@
                 </div>
             </div>
 
-            <div class="row">
-                <!-- Kolom 1: Form Upload -->
-                <div class="container mt-4">
-                    <div class="row">
-                        <div class="col-md-6 offset-md-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4>Unggah Foto Akad</h4>
-                                </div>
-                                <div class="card-body">
-                                    <form action="{{ route('deal.photo.upload', $deal->id) }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
+            <div class="container mt-4">
+                <div class="row">
+                    <!-- Kolom 1: Form Upload -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Unggah Foto Akad</h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="{{ route('deal.photo.upload', $deal->id) }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
 
-                                        <!-- Input Foto Akad -->
-                                        <div class="input-group mb-3">
-                                            <input id="thumbnail" class="form-control" type="file" name="photo" accept="image/*" required>
-                                            <button type="button" id="previewButton" class="btn btn-primary">
-                                                <i class="fa fa-eye"></i> Preview
-                                            </button>
-                                        </div>
+                                    <!-- Input Foto Akad -->
+                                    <div class="input-group mb-3">
+                                        <input id="thumbnail" class="form-control" type="file" name="photo" accept="image/*" required>
+                                        <button type="button" id="previewButton" class="btn btn-primary">
+                                            <i class="fa fa-eye"></i> Preview
+                                        </button>
+                                    </div>
 
-                                        <!-- Preview Foto -->
-                                        <div id="holder" style="margin-top:15px;max-height:150px;">
-                                            <img id="previewImage" class="img-thumbnail d-none" style="max-height: 150px; object-fit: cover;">
-                                        </div>
+                                    <!-- Preview Foto -->
+                                    <div id="holder" style="margin-top:15px; max-height:150px;">
+                                        <img id="previewImage" class="img-thumbnail d-none" style="max-height: 150px; object-fit: cover;">
+                                    </div>
 
-                                        <!-- Tombol Unggah -->
-                                        <button type="submit" class="btn btn-primary w-100 mt-3">Unggah</button>
-                                    </form>
-                                </div>
+                                    <!-- Tombol Unggah -->
+                                    <button type="submit" class="btn btn-primary w-100 mt-3">Unggah</button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Kolom 2: Daftar Foto Akad -->
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Daftar Foto Akad</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                @forelse($deal->photos as $photo)
-                                    <div class="col-6 mb-3">
-                                        <img src="{{ asset('/' . $photo->file) }}" alt="Foto Akad" class="img-thumbnail" style="max-height: 150px; max-width: 100%; object-fit: cover;">
-                                        <form action="{{ route('deal.photo.destroy', [$deal->id, $photo->id]) }}" method="POST" class="mt-2">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm w-100">Hapus</button>
-                                        </form>
-                                    </div>
-                                @empty
-                                    <p class="text-center">Tidak ada foto yang diunggah.</p>
-                                @endforelse
+                    <!-- Kolom 2: Daftar Foto Akad -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Daftar Foto Akad</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @forelse($deal->photos as $photo)
+                                        <div class="col-6 mb-3">
+                                            <img src="{{ asset('/' . $photo->image) }}" alt="Foto Akad" class="img-thumbnail" style="max-height: 150px; max-width: 100%; object-fit: cover;">
+                                            <form action="{{ route('deal.photo.destroy', [$deal->id, $photo->id]) }}" method="POST" class="mt-2">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm w-100">Hapus</button>
+                                            </form>
+                                        </div>
+                                    @empty
+                                        <p class="text-center">Tidak ada foto yang diunggah.</p>
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
 @push("after-script")
     <!-- Untuk unisharp -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
-    <script>
-        $('#lfm').filemanager('image');
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- JavaScript untuk Menampilkan/Menyembunyikan Input Berdasarkan Jenis Akad -->
