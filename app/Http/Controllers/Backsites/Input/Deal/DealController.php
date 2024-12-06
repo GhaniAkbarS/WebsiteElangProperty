@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backsites\Input\Deal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log; 
 use App\Http\Requests\DealRequest;
 use App\Services\DealService;
 use Illuminate\Http\RedirectResponse;
@@ -71,9 +72,10 @@ class DealController extends Controller
             // Simpan data akad menggunakan service
             $deal = $this->dealService->storeDeal($request);
 
-            // Simpan foto-foto akad menggunakan service
-            if ($request->hasFile('photos')) {
-                $this->dealService->uploadDealPhoto($deal, $request->file('photos'));
+            // Jika ada file gambar yang diupload
+            if ($request->hasFile('image')) {
+                // Simpan gambar ke folder 'deals' di public storage
+                $data['image'] = $request->file('image')->store('deals', 'public');
             }
 
             return redirect()->route('deal.index')->with('success', 'Akad berhasil disimpan');
@@ -111,6 +113,21 @@ class DealController extends Controller
                 'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
+            // Proses upload file
+            if ($request->hasFile('image')) {
+                // Hapus file lama jika ada
+                if ($deal->image && Storage::exists('public/deals/' . $deal->image)) {
+                    Storage::delete('public/deals/' . $deal->image);
+                }
+
+                // Simpan file baru
+                $file = $request->file('image');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/deals', $filename);
+
+                $data['image'] = $filename; // Simpan nama file ke database
+            }
+
             // Update data deal
             $deal->update($request->only('title', 'deal_type', 'branch_id'));
 
@@ -130,33 +147,19 @@ class DealController extends Controller
     public function destroy($id)
     {
         try {
-            // Cari data foto berdasarkan ID
-            $photo = DealPhoto::findOrFail($id);
+            Log::info("Destroy method called with ID: $id");
 
-            // Hapus file dari storage
-            if (file_exists(storage_path('app/public/deal_photos/' . $photo->file))) {
-                unlink(storage_path('app/public/deal_photos/' . $photo->file));
-            }
+            // Panggil service untuk menghapus deal
+            $this->dealService->deleteDeal($id);
 
-            // Hapus data dari database
-            $photo->delete();
-
-            // Jika permintaan berasal dari AJAX
-            if (request()->ajax()) {
-                return response()->json(['success' => true, 'message' => 'Foto akad berhasil dihapus']);
-            }
-
-            // Jika permintaan bukan dari AJAX
-            return redirect()->back()->with('success', 'Foto akad berhasil dihapus');
+            // Respon sukses
+            return response()->json(['success' => true, 'message' => 'Data deal berhasil dihapus']);
         } catch (Exception $e) {
-            // Jika terjadi kesalahan
-            if (request()->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Gagal menghapus foto akad: ' . $e->getMessage()], 500);
-            }
-
-            return redirect()->back()->with('error', 'Gagal menghapus foto akad: ' . $e->getMessage());
+            Log::error("Error saat menghapus deal: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus data'], 500);
         }
     }
+
 
     private function generateTitle($request)
     {

@@ -179,19 +179,13 @@
                                 @enderror
                             </div>
 
-                            <!-- Input Tanggal Akad -->
+                            <!-- Input Keyword (Tag) -->
                             <div class="form-group mb-3">
-                                <label for="deal_date">Tanggal Akad</label>
-                                <input type="date" name="deal_date" id="deal_date" value="{{ old('deal_date', $deal->deal_date) }}" class="form-control">
-                                @error('deal_date')
+                                <label for="keyword">Keyword (Tag)</label>
+                                <input type="text" name="keyword" id="keyword" value="{{ old('keyword', $deal->keyword) }}" placeholder="Masukkan keyword" class="form-control" data-role="tagsinput">
+                                @error('keyword')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
-                            </div>
-
-
-                            <!-- Submit Button -->
-                            <div class="form-group text-right">
-                                <button type="submit" class="btn btn-primary">Update</button>
                             </div>
                         </form>
                     </div>
@@ -202,18 +196,17 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="mb-3">Merek dan Jenis Mobil</h4>
                         <form>
-                            <!-- Menampilkan foto thumbnail -->
-                            <div class="form-group">
-                                <label for="image" class="block text-sm font-medium text-gray-700">Thumbnail (Gambar)</label>
-                                <input type="file" name="image" id="image" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md">
-                                @if ($deal->image)
-                                    <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $deal->image) }}" alt="Thumbnail" class="w-32 h-32 object-cover">
-                                    </div>
-                                @endif
-                                @error('image')
+                            <!-- Input Jenis Akad -->
+                            <div class="form-group mb-3">
+                                <label for="deal_type">Jenis Akad</label>
+                                <select name="deal_type" id="deal_type" class="form-control">
+                                    <option value="">Pilih Jenis Akad</option>
+                                    @foreach($dealTypes as $dealType)
+                                        <option value="{{ $dealType }}" {{ $deal->deal_type == $dealType ? 'selected' : '' }}>{{ $dealType }}</option>
+                                    @endforeach
+                                </select>
+                                @error('deal_type')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -241,42 +234,30 @@
                                 @enderror
                             </div>
 
-                            <!-- Input Jenis Akad -->
+                            <!-- Input Tanggal Akad -->
                             <div class="form-group mb-3">
-                                <label for="deal_type">Jenis Akad</label>
-                                <select name="deal_type" id="deal_type" class="form-control">
-                                    <option value="">Pilih Jenis Akad</option>
-                                    @foreach($dealTypes as $dealType)
-                                        <option value="{{ $dealType }}" {{ $deal->deal_type == $dealType ? 'selected' : '' }}>{{ $dealType }}</option>
-                                    @endforeach
-                                </select>
-                                @error('deal_type')
+                                <label for="deal_date">Tanggal Akad</label>
+                                <input type="date" name="deal_date" id="deal_date" value="{{ old('deal_date', $deal->deal_date) }}" class="form-control">
+                                @error('deal_date')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Input Thumbnail (Gambar) -->
-                            <div class="form-group mb-3">
+                            <div class="form-group">
                                 <label for="image">Thumbnail (Gambar)</label>
-                                <input type="file" name="image" id="image" class="form-control-file">
+                                <input type="file" name="image" id="image" class="form-control">
+
                                 @if($deal->image)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $deal->image) }}" alt="Thumbnail" class="img-fluid" width="100">
+                                        <img src="{{ asset('storage/deals/' . $deal->image) }}" alt="Thumbnail" class="img-fluid" width="100">
                                     </div>
                                 @endif
+
                                 @error('image')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Input Keyword (Tag) -->
-                            <div class="form-group mb-3">
-                                <label for="keyword">Keyword (Tag)</label>
-                                <input type="text" name="keyword" id="keyword" value="{{ old('keyword', $deal->keyword) }}" placeholder="Masukkan keyword" class="form-control" data-role="tagsinput">
-                                @error('keyword')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
 
                             <!-- Submit Button -->
                             <div class="form-group text-right">
@@ -319,30 +300,30 @@
                         </div>
                     </div>
 
-                    <!-- Kolom 2: Daftar Foto Akad -->
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Daftar Foto Akad</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    @forelse($deal->photos as $photo)
-                                        <div class="col-6 mb-3">
-                                            <img src="{{ asset('/' . $photo->image) }}" alt="Foto Akad" class="img-thumbnail" style="max-height: 150px; max-width: 100%; object-fit: cover;">
-                                            <form action="{{ route('deal.photo.destroy', [$deal->id, $photo->id]) }}" method="POST" class="mt-2">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm w-100">Hapus</button>
-                                            </form>
-                                        </div>
-                                    @empty
-                                        <p class="text-center">Tidak ada foto yang diunggah.</p>
-                                    @endforelse
-                                </div>
+                <!-- Kolom 2: Daftar Foto Akad -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Daftar Foto Akad</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @forelse($deal->photos as $photo)
+                                    <div class="col-6 mb-3">
+                                        <img src="{{ asset('storage/' . $photo->image) }}" alt="Foto Akad" class="img-thumbnail" style="max-height: 150px; max-width: 100%; object-fit: cover;">
+                                        <form action="{{ route('deal.photo.destroy', [$deal->id, $photo->id]) }}" method="POST" class="mt-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm w-100">Hapus</button>
+                                        </form>
+                                    </div>
+                                @empty
+                                    <p class="text-center">Tidak ada foto yang diunggah.</p>
+                                @endforelse
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
 
@@ -352,9 +333,10 @@
 
 @push("after-script")
     <!-- Untuk unisharp -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
-
+    <script>
+        $('#lfm').filemanager('image');
+    </script
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- JavaScript untuk Menampilkan/Menyembunyikan Input Berdasarkan Jenis Akad -->
     <script>

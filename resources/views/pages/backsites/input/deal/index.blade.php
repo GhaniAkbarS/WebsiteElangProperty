@@ -215,24 +215,26 @@
             // Aksi Hapus
             $('#deals-table').on('click', '.btn-delete', function() {
                 let url = $(this).data('url');
+                console.log("URL untuk hapus:", url); // Debug URL
                 if (confirm('Anda yakin ingin menghapus data ini?')) {
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         data: {
-                            _token: '{{ csrf_token() }}' // Token CSRF Laravel
+                            _token: '{{ csrf_token() }}'
                         },
                         success: function(response) {
+                            console.log("Response sukses:", response); // Debug respons sukses
                             if (response.success) {
-                                $('#deals-table').DataTable().ajax.reload(null, false); // Reload DataTable tanpa refresh halaman
+                                $('#deals-table').DataTable().ajax.reload(null, false);
                                 alert('Data berhasil dihapus.');
                             } else {
                                 alert('Gagal menghapus data: ' + response.message);
                             }
                         },
                         error: function(xhr) {
-                            alert('Terjadi kesalahan saat menghapus data.');
-                            console.error("Error: ", xhr.responseText);
+                            console.error("Error saat AJAX:", xhr.responseText); // Debug error
+                            alert('Tidak bisa dihapus.');
                         }
                     });
                 }

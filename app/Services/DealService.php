@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use App\Repositories\DealRepository;
-use Illuminate\Support\Str; // Untuk helper manipulasi string
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log; // Untuk helper manipulasi string
 use App\Models\Deal; // Untuk mengakses model Deal
 use App\Models\Branch; // Tambahkan ini
 use Yajra\DataTables\DataTables;
@@ -74,7 +75,6 @@ class DealService
         return 'Judul Tidak Diketahui'; // Jika tidak ada yang cocok
     }
 
-
     public function getAllDeals()
     {
         return $this->dealRepository->getAllDeals();
@@ -93,7 +93,25 @@ class DealService
 
     public function deleteDeal($id)
     {
-        return $this->dealRepository->deleteDeal($id);
+        Log::info("Deleting deal with ID: $id");
+
+        $deal = Deal::findOrFail($id);
+
+        // Hapus file thumbnail jika ada
+        if ($deal->thumbnail && file_exists(storage_path('app/public/deals/' . $deal->thumbnail))) {
+            unlink(storage_path('app/public/deals/' . $deal->thumbnail));
+        }
+
+        // Hapus foto terkait deal
+        foreach ($deal->photos as $photo) {
+            Log::info("Deleting photo: {$photo->file}");
+            if (file_exists(storage_path('app/public/deal_photos/' . $photo->file))) {
+                unlink(storage_path('app/public/deal_photos/' . $photo->file));
+            }
+            $photo->delete();
+        }
+
+        $deal->delete();
     }
 
     public function uploadDealPhoto($deal, $photo)
@@ -108,7 +126,7 @@ class DealService
 
         // Simpan referensi ke database
         $deal->photos()->create([
-            'file' => $photoPath,
+            'image' => $photoPath,
         ]);
 
         return $photoPath; // Return path jika diperlukan
