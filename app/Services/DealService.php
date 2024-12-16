@@ -9,6 +9,7 @@ use App\Models\Deal; // Untuk mengakses model Deal
 use App\Models\Branch; // Tambahkan ini
 use Yajra\DataTables\DataTables;
 use App\Models\CarBrand;
+use Illuminate\Http\UploadedFile;
 
 class DealService
 {
@@ -40,8 +41,12 @@ class DealService
         // Membuat slug dari title yang telah dihasilkan
         $validatedData['slug'] = Str::slug($validatedData['title'], '-');
 
+        // Simpan gambar jika ada
+        if ($request->hasFile('image')) {
+            $validatedData['image'] =$request->file('image')->store('images/deal', 'public');
+        }
         // Menyimpan data ke dalam tabel `ep_deal`
-        return Deal::create($validatedData);
+        return $this->dealRepository->create($validatedData);
     }
 
     // Method untuk menggenerate title secara otomatis
@@ -85,33 +90,27 @@ class DealService
         return $this->dealRepository->findDealById($id);
     }
 
-    public function updateDeal($request, $id, $title)
+    public function updateDeal($request, $id)
     {
+        //validasi input
+        $validated = $request->validate([
+            'branch_id' => 'required|exists:ep_branch,id',
+            'car_brand' => 'required_if:deal_type,Mobil_Baru,Mobil_Bekas|string|max:255|nullable', // Wajib jika jenis akad mobil
+            'car_type' => 'required_if:deal_type,Mobil_Baru,Mobil_Bekas|string|max:255|nullable', // Wajib jika jenis akad mobil
+            'title' => 'required|string|max:255',
+            'deal_date' => 'required|date',
+            'deal_type' => 'required|string', // Validasi sederhana untuk tipe akad
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'keyword' => 'nullable|string',
+            'content' => 'nullable|string',
+        ]);
         // Perbarui deal menggunakan repository
-        return $this->dealRepository->update($id, array_merge($request->validated(), ['title' => $title]));
+        return $this->dealRepository->update($id, $validated);
     }
 
     public function deleteDeal($id)
     {
-        Log::info("Deleting deal with ID: $id");
-
-        $deal = Deal::findOrFail($id);
-
-        // Hapus file thumbnail jika ada
-        if ($deal->thumbnail && file_exists(storage_path('app/public/deals/' . $deal->thumbnail))) {
-            unlink(storage_path('app/public/deals/' . $deal->thumbnail));
-        }
-
-        // Hapus foto terkait deal
-        foreach ($deal->photos as $photo) {
-            Log::info("Deleting photo: {$photo->file}");
-            if (file_exists(storage_path('app/public/deal_photos/' . $photo->file))) {
-                unlink(storage_path('app/public/deal_photos/' . $photo->file));
-            }
-            $photo->delete();
-        }
-
-        $deal->delete();
+        return $this->dealRepository->deleteDeal($id);
     }
 
     public function uploadDealPhoto($deal, $photo)
@@ -131,6 +130,4 @@ class DealService
 
         return $photoPath; // Return path jika diperlukan
     }
-
-
 }

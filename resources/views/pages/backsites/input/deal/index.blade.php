@@ -164,7 +164,6 @@
                         render: function(data) {
                             return data ? new Date(data).toLocaleDateString('id-ID', {
                                 day: '2-digit', month: 'short', year: 'numeric',
-                                hour: '2-digit', minute: '2-digit'
                             }) : '-';
                         }
                     },
@@ -174,14 +173,15 @@
                         searchable: false,
                         render: function(data, type, row) {
                             let editUrl = "{{ route('deal.edit', ':id') }}".replace(':id', row.id);
+                            let deleteUrl = "{{ route('deal.destroy', ':id') }}".replace(':id', row.id);//gagal hapus karena kurang ini
                             return `
                                 <a href="${editUrl}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <button class="btn btn-sm btn-danger btn-delete" data-url="{{ route('deal.destroy', ':id') }}".replace(':id', row.id)">
+                                <button class="btn btn-sm btn-danger btn-delete" data-url="${deleteUrl}">
                                     <i class="fas fa-trash-alt"></i> Hapus
                                 </button>
-                            `;
+                            `;//gagal hapus karena salah url, malah masukin route nya njir
                         }
                     }
                 ]
@@ -215,26 +215,24 @@
             // Aksi Hapus
             $('#deals-table').on('click', '.btn-delete', function() {
                 let url = $(this).data('url');
-                console.log("URL untuk hapus:", url); // Debug URL
                 if (confirm('Anda yakin ingin menghapus data ini?')) {
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         data: {
-                            _token: '{{ csrf_token() }}'
+                            _token: '{{ csrf_token() }}' // Token CSRF Laravel
                         },
                         success: function(response) {
-                            console.log("Response sukses:", response); // Debug respons sukses
                             if (response.success) {
-                                $('#deals-table').DataTable().ajax.reload(null, false);
+                                $('#deals-table').DataTable().ajax.reload(null, false); // Reload DataTable tanpa refresh halaman
                                 alert('Data berhasil dihapus.');
                             } else {
                                 alert('Gagal menghapus data: ' + response.message);
                             }
                         },
                         error: function(xhr) {
-                            console.error("Error saat AJAX:", xhr.responseText); // Debug error
-                            alert('Tidak bisa dihapus.');
+                            alert('Terjadi kesalahan saat menghapus data.');
+                            console.error("Error: ", xhr.responseText);
                         }
                     });
                 }

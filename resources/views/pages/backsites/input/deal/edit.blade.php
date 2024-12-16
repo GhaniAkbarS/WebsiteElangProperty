@@ -249,7 +249,7 @@
 
                                 @if($deal->image)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/deals/' . $deal->image) }}" alt="Thumbnail" class="img-fluid" width="100">
+                                        <img src="{{ asset('storage/images/deal' . $deal->image) }}" alt="Thumbnail" class="img-fluid" width="100">
                                     </div>
                                 @endif
 
@@ -282,7 +282,7 @@
 
                                     <!-- Input Foto Akad -->
                                     <div class="input-group mb-3">
-                                        <input id="thumbnail" class="form-control" type="file" name="photo" accept="image/*" required>
+                                        <input id="deal_photo" class="form-control" type="file" name="photo" accept="image/*" required>
                                         <button type="button" id="previewButton" class="btn btn-primary">
                                             <i class="fa fa-eye"></i> Preview
                                         </button>

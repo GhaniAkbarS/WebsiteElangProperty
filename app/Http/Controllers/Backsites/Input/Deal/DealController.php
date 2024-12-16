@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Backsites\Input\Deal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\DealRequest;
 use App\Services\DealService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Yajra\DataTables\DataTables;
 use App\Models\Deal;
 use App\Models\Branch;
@@ -62,7 +63,6 @@ class DealController extends Controller
         $branches = $this->dealService->getBranches();
         $carBrands = $this->dealService->getCarBrands();
         $dealTypes = $this->dealTypes;
-
         return view('pages.backsites.input.Deal._deal', compact('branches', 'carBrands', 'dealTypes'));
     }
 
@@ -70,13 +70,7 @@ class DealController extends Controller
     {
         try {
             // Simpan data akad menggunakan service
-            $deal = $this->dealService->storeDeal($request);
-
-            // Jika ada file gambar yang diupload
-            if ($request->hasFile('image')) {
-                // Simpan gambar ke folder 'deals' di public storage
-                $data['image'] = $request->file('image')->store('deals', 'public');
-            }
+            $this->dealService->storeDeal($request);
 
             return redirect()->route('deal.index')->with('success', 'Akad berhasil disimpan');
         } catch (Exception $e) {
@@ -103,63 +97,35 @@ class DealController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         try {
-            $deal = Deal::findOrFail($id);
+            //memanggil service
+            $this->dealService->updateDeal($request, $id);
 
-            $request->validate([
-                'title' => 'nullable|string|max:255',
-                'deal_type' => 'nullable|string',
-                'branch_id' => 'nullable|exists:branches,id',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-                'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            ]);
-
-            // Proses upload file
-            if ($request->hasFile('image')) {
-                // Hapus file lama jika ada
-                if ($deal->image && Storage::exists('public/deals/' . $deal->image)) {
-                    Storage::delete('public/deals/' . $deal->image);
-                }
-
-                // Simpan file baru
-                $file = $request->file('image');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('public/deals', $filename);
-
-                $data['image'] = $filename; // Simpan nama file ke database
-            }
-
-            // Update data deal
-            $deal->update($request->only('title', 'deal_type', 'branch_id'));
-
-            // Menyimpan foto ke storage
-            if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('photos', 'public');
-                $deal->photo = $path;
-                $deal->save();
-            }
-
-            return redirect()->back()->with('success', 'Foto berhasil diunggah.');
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui data deal: ' . $e->getMessage());
+            return redirect()->route('deal.index')->with('success', 'Data akad berhasil diupdate');
+        } catch (Exception $e){
+            return redirect()->back()->withInput()->with('error', 'Gagal mengupdate data akad');
         }
     }
 
     public function destroy($id)
     {
         try {
-            Log::info("Destroy method called with ID: $id");
-
-            // Panggil service untuk menghapus deal
             $this->dealService->deleteDeal($id);
 
-            // Respon sukses
-            return response()->json(['success' => true, 'message' => 'Data deal berhasil dihapus']);
+            // Jika permintaan berasal dari AJAX
+            if (request()->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Akad berhasil dihapus']);
+            }
+
+            // Jika permintaan bukan dari AJAX
+            return redirect()->route('deal.index')->with('success', 'Akad berhasil dihapus');
         } catch (Exception $e) {
-            Log::error("Error saat menghapus deal: " . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Gagal menghapus data'], 500);
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menghapus akad: ' . $e->getMessage()], 500);
+            }
+
+            return redirect()->back()->with('error', 'Gagal menghapus akad: ' . $e->getMessage());
         }
     }
-
 
     private function generateTitle($request)
     {

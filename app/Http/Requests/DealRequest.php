@@ -13,7 +13,7 @@ class DealRequest extends FormRequest
 
     public function rules()
     {
-        //cara mengakali kalau data tidak masuk itu dicoba coba tiap kolom untuk null, sekiranya apa data yang hanya masuk
+           //cara mengakali kalau data tidak masuk itu dicoba coba tiap kolom untuk null, sekiranya apa data yang hanya masuk
         return [
             'branch_id' => 'required|exists:ep_branch,id',
             'car_brand' => 'required_if:deal_type,Mobil_Baru,Mobil_Bekas|string|max:255|nullable', // Wajib jika jenis akad mobil
@@ -21,7 +21,7 @@ class DealRequest extends FormRequest
             // 'title' => 'required|string|max:255',
             'deal_date' => 'required|date',
             'deal_type' => 'required|string', // Validasi sederhana untuk tipe akad
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'keyword' => 'nullable|string',
             'content' => 'nullable|string',
             // 'deal_photos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
