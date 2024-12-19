@@ -137,15 +137,16 @@
 
     <!-- Edit Akad Form -->
     <div class="container mt-4">
-        <div class="row">
-            <!-- Kolom Kiri -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="mb-3">Form Edit Akad</h4>
-                        <form action="{{ route('deal.update', $deal->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
+        @if ($deal)
+            <div class="row">
+                <!-- Kolom Kiri -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="mb-3">Form Edit Akad</h4>
+                            <form action="{{ route('deal.update', $deal->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
 
                             <!-- Edit Title -->
                             <div class="mb-4">
@@ -187,7 +188,7 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </form>
+
                     </div>
                 </div>
             </div>
@@ -196,8 +197,8 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <form>
-                            <!-- Input Jenis Akad -->
+
+                        <!-- Input Jenis Akad -->
                             <div class="form-group mb-3">
                                 <label for="deal_type">Jenis Akad</label>
                                 <select name="deal_type" id="deal_type" class="form-control">
@@ -243,21 +244,20 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group">
-                                <label for="image">Thumbnail (Gambar)</label>
-                                <input type="file" name="image" id="image" class="form-control">
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Thumbnail (Gambar)</label>
 
+                                {{-- Input file untuk mengganti gambar --}}
+                                <input type="file" name="image" id="image" class="form-control mb-2">
+
+                                {{-- Tampilkan gambar yang ada jika sudah ada sebelumnya --}}
                                 @if($deal->image)
-                                    <div class="mt-2">
-                                        <img src="{{ asset('storage/images/deal' . $deal->image) }}" alt="Thumbnail" class="img-fluid" width="100">
+                                    <div>
+                                        <p>Thumbnail saat ini:</p>
+                                        <img src="{{ asset('storage/' . $deal->image) }}" alt="Thumbnail" style="width: 100px; height: auto; margin-top: 10px;">
                                     </div>
                                 @endif
-
-                                @error('image')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
                             </div>
-
 
                             <!-- Submit Button -->
                             <div class="form-group text-right">
@@ -267,6 +267,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+    @else
+        <p class="text-center text-danger">Data tidak tersedia.</p>
+    @endif
 
             <div class="container mt-4">
                 <div class="row">

@@ -55,7 +55,7 @@ class DealController extends Controller
 
         // Kembalikan daftar cabang untuk tampilan
         $branches = Branch::all();
-        return view('pages.backsites.input.Deal.index', compact('branches'));
+        return view('pages.backsites.input.deal.index', compact('branches'));
     }
 
     public function create(): View
@@ -63,7 +63,7 @@ class DealController extends Controller
         $branches = $this->dealService->getBranches();
         $carBrands = $this->dealService->getCarBrands();
         $dealTypes = $this->dealTypes;
-        return view('pages.backsites.input.Deal._deal', compact('branches', 'carBrands', 'dealTypes'));
+        return view('pages.backsites.input.deal._deal', compact('branches', 'carBrands', 'dealTypes'));
     }
 
     public function store(DealRequest $request): RedirectResponse
@@ -86,10 +86,13 @@ class DealController extends Controller
 
     public function edit($id)
     {
-        $deal = Deal::with('photos')->findOrFail($id);
-        $branches = Branch::all();
+        $deal = Deal::find($id);
+        if (!$deal) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+        $branches = $this->dealService->getAllBranches();
         $dealTypes = $this->dealTypes;
-        $carBrands = CarBrand::all();
+        $carBrands = $this->dealService->getAllCarBrands();
 
         return view('pages.backsites.input.deal.edit', compact('deal', 'branches', 'dealTypes', 'carBrands'));
     }
@@ -102,6 +105,7 @@ class DealController extends Controller
 
             return redirect()->route('deal.index')->with('success', 'Data akad berhasil diupdate');
         } catch (Exception $e){
+            dd($e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Gagal mengupdate data akad');
         }
     }

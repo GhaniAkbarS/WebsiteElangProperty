@@ -87,25 +87,45 @@ class DealService
 
     public function findDealById($id)
     {
-        return $this->dealRepository->findDealById($id);
+        return $this->dealRepository->findById($id);
+    }
+
+    // Mengambil semua data cabang
+    public function getAllBranches()
+    {
+        return Branch::all();
+    }
+
+    // Mengambil semua brand mobil
+    public function getAllCarBrands()
+    {
+        return CarBrand::all();
     }
 
     public function updateDeal($request, $id)
     {
         //validasi input
         $validated = $request->validate([
-            'branch_id' => 'required|exists:ep_branch,id',
+            'branch_id' => '|exists:ep_branch,id',
             'car_brand' => 'required_if:deal_type,Mobil_Baru,Mobil_Bekas|string|max:255|nullable', // Wajib jika jenis akad mobil
             'car_type' => 'required_if:deal_type,Mobil_Baru,Mobil_Bekas|string|max:255|nullable', // Wajib jika jenis akad mobil
-            'title' => 'required|string|max:255',
-            'deal_date' => 'required|date',
-            'deal_type' => 'required|string', // Validasi sederhana untuk tipe akad
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'title' => '|string|max:255',
+            'deal_date' => '|date',
+            'deal_type' => '|string', // Validasi sederhana untuk tipe akad
+            'image' => '|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'keyword' => 'nullable|string',
             'content' => 'nullable|string',
         ]);
+
+        // Simpan gambar jika ada
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $path = $file->store('images/deal', 'public'); // Simpan gambar ke disk 'public'
+            $validated['image'] = $path;
+        }
+        
         // Perbarui deal menggunakan repository
-        return $this->dealRepository->update($id, $validated);
+        return $this->dealRepository->updateDeal($id, $validated);
     }
 
     public function deleteDeal($id)

@@ -41,28 +41,31 @@ class DealRepository
         }
     }
 
+    // // Memperbarui data deal
+    public function updateDeal($id, $data)
+    {
+        $deal = Deal::findOrFail($id);
+
+        // Jika ada gambar baru, hapus gambar lama
+        if (isset($data['image'])) {
+            if ($deal->image && Storage::disk('public')->exists($deal->image)) {
+                Storage::disk('public')->delete($deal->image); // Hapus file lama
+            }
+            $deal->image = $data['image'];
+        }
+
+        $deal->update($data);
+        return $deal; // Cek apakah update berhasil (true/false)
+    }
+
     public function update($id, array $data)
     {
         $deal = Deal::findOrFail($id);
 
-        if(isset($data['image'])) {
-            if ($deal->image && Storage::exists('public/images/deal' . $deal->image)) {
-                Storage::delete('public/images/deal' .$deal->image);
-            }
-            $data['image'] = $data['image']->store('iamges/deal', 'public');
-        }
+        // Update data deal sesuai dengan data yang dikirim
+        $deal->update($data);
 
-        // Proses upload file untuk photo
-        if (isset($data['photo'])) {
-            if ($deal->photo && Storage::exists('public/photos/' . $deal->photo)) {
-                Storage::delete('public/photos/' . $deal->photo);
-            }
-
-            // Simpan file baru
-            $data['photo'] = $data['photo']->store('photos', 'public');
-        }
-
-        return $deal->update($data);
+        return $deal;
     }
 
     // Mendapatkan semua deals
@@ -90,31 +93,9 @@ class DealRepository
     }
 
     // Mendapatkan detail deal berdasarkan ID
-    public function findDealById($id)
+    public function findById($id)
     {
         return Deal::findOrFail($id);
-    }
-
-    // // Memperbarui data deal
-    public function updateDeal($id, $data)
-    {
-        $deal = Deal::findOrFail($id);
-
-        // Update data deal sesuai dengan data yang dikirim
-        $deal->update([
-            'branch_id' => $data->branch_id,
-            'car_brand' => $data->car_brand,
-            'car_type' => $data->car_type,
-            'title' => $data->title,
-            'slug' => $data->slug,
-            'deal_date' => $data->deal_date,
-            'deal_type' => $data->deal_type,
-            'image' => $data->file('image') ? $data->file('image')->store('deals', 'public') : $deal->image,
-            'keyword' => $data->keyword,
-            'content' => $data->content,
-        ]);
-
-        return $deal;
     }
 
     // Menghapus deal berdasarkan ID
