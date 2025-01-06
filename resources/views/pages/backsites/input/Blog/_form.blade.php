@@ -109,6 +109,7 @@
                             @enderror
                         </div>
 
+                        {{-- input keyword --}}
                         <div class="form-group mb-3">
                             <label for="keyword">Keyword</label>
                             <input type="text" id="keyword" name="keyword" class="form-control" value="{{ old('keyword') }}" data-role="tagsinput">

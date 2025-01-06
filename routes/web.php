@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Frontsites\home\HomeController;
+use App\Http\Controllers\Frontsites\deals\DealsController;
 use App\Http\Controllers\Backsites\Output\Dashboard\DashboardController;
 use App\Http\Controllers\Backsites\Master\Category\CategoryController;
 use App\Http\Controllers\Backsites\Input\Slide\SlideController;
 use App\Http\Controllers\Backsites\Input\Blog\BlogController;
 use App\Http\Controllers\Backsites\Input\Deal\DealController;
+use App\Http\Controllers\Frontsites\Blogs\BlogsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +25,15 @@ use Illuminate\Support\Facades\Route;
 // route dibawah memanggil controler home yang berisi, alamat halaman utama, pada pages frontsite
 // dalamnya ada folder home, dengan isi masing masing section
 Route::get('/', HomeController::class)->name('home');
+
+//Menghubungkan antara content dengan halaman detail/ keterangan
+Route::get('/deal-detail/{id}', [DealsController::class, 'show'])->name('deals.detail');
+Route::get('/{category}/{slug}', [BlogsController::class, 'show'])->name('blogs.detail');
+// Route::get('/deal-akad', function () {
+//     return view('pages.frontsites.home._deal-akad'); //Mengatur route di navbar
+// })->name('deal-akad');
+Route::get('/akad', [DealsController::class, 'akad'])->name('akad'); //Mengatur route di navbar deal-akadnya
+Route::get('/artikel', [BlogsController::class, 'artikel'])->name('artikel'); //Mengatur route di navbar deal-akadnya
 
 // slash atau garis miring itu adalah jika, setelah link nya itu, uri url namanya
 Route::get('/dashboard', DashboardController::class)->name('dashboard');

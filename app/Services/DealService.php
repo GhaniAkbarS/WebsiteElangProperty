@@ -123,7 +123,7 @@ class DealService
             $path = $file->store('images/deal', 'public'); // Simpan gambar ke disk 'public'
             $validated['image'] = $path;
         }
-        
+
         // Perbarui deal menggunakan repository
         return $this->dealRepository->updateDeal($id, $validated);
     }

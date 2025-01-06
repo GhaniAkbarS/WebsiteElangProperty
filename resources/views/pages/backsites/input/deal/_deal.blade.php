@@ -87,6 +87,8 @@
     </div>
 
     <!-- Form Container -->
+    <div class="container-xl mt-3">
+        <div class="card shadow-lg">
     <div class="container-xl">
         <form action="{{ route('deal.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -160,8 +162,17 @@
                     @enderror
                 </div>
 
+                {{-- Input ketereangan --}}
+                <div class="form-group">
+                    <label for="content" class="block text-sm font-medium text-gray-700">Keterangan</label>
+                    <textarea name="content" id="editor">{{ old('content') }}</textarea>
+                    @error('content')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <!-- Input Keyword (Tag) -->
-                <div class="mb-4">
+                <div class="form-group">
                     <label for="keyword" class="block text-sm font-medium text-gray-700">Keyword (Tag)</label>
                     <input type="text" name="keyword" id="keyword" placeholder="Masukkan keyword" class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md" data-role="tagsinput">
                     @error('keyword')
@@ -176,12 +187,13 @@
             </div>
         </form>
     </div>
+        </div>
+    </div>
 </div>
 
     @push("after-script")
     //Deal input
-
-    <!-- JavaScript untuk Menampilkan/Menyembunyikan Input Berdasarkan Jenis Akad -->
+        <!-- JavaScript untuk Menampilkan/Menyembunyikan Input Berdasarkan Jenis Akad -->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const dealType = document.getElementById('deal_type');
@@ -206,6 +218,36 @@
                 toggleCarFields();
             });
         </script>
+        {{-- JS Buat Keterangan --}}
+        <script type="importmap">
+            {
+                "imports": {
+                    "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.js",
+                    "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.2.0/"
+                }
+            }
+        </script>
+        <script type="module">
+            import {
+                ClassicEditor,
+                Essentials,
+                Bold,
+                Italic,
+                Font,
+                Paragraph
+            } from 'ckeditor5';
+            ClassicEditor
+                .create( document.querySelector( '#editor' ), {
+                    plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+                    toolbar: [
+                        'undo', 'redo', '|', 'bold', 'italic', '|',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                    ]
+                } )
+                .then( /* ... */ )
+                .catch( /* ... */ );
+        </script>
+        {{-- JS Utama --}}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @endpush
 </x-back-app-layout>

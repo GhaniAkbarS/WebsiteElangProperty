@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Deal;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Models\CarBrand;
 use App\Models\Branch;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +18,11 @@ class DealRepository
             $data['image'] = $data['image']->store('images/deal', 'public');
         }
         return Deal::create($data);
+    }
+
+    public function getByLimit($limit)
+    {
+        return Deal::latest()->take($limit)->get();
     }
 
     // Menyimpan data akad ke tabel ep_deal
@@ -46,27 +52,41 @@ class DealRepository
     {
         $deal = Deal::findOrFail($id);
 
-        // Jika ada gambar baru, hapus gambar lama
-        if (isset($data['image'])) {
-            if ($deal->image && Storage::disk('public')->exists($deal->image)) {
-                Storage::disk('public')->delete($deal->image); // Hapus file lama
+        DB::beginTransaction();
+        try {
+            // Jika ada gambar baru, hapus gambar lama
+            if (isset($data['image'])) {
+                if ($deal->image && Storage::disk('public')->exists($deal->image)) {
+                    Storage::disk('public')->delete($deal->image); // Hapus file lama
+                }
+                $deal->image = $data['image'];
             }
-            $deal->image = $data['image'];
+
+            // Hapus tag <p> dari content jika ada
+            if (isset($data['content'])) {
+                $data['content'] = preg_replace('/<p>(.*?)<\/p>/', '$1', $data['content']);
+            }
+
+            // Update data pada model
+            $deal->update($data);
+
+            DB::commit();
+            return $deal;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e; // Lempar ulang exception agar bisa ditangani di luar
         }
-
-        $deal->update($data);
-        return $deal; // Cek apakah update berhasil (true/false)
     }
 
-    public function update($id, array $data)
-    {
-        $deal = Deal::findOrFail($id);
+    // public function update($id, array $data)
+    // {
+    //     $deal = Deal::findOrFail($id);
 
-        // Update data deal sesuai dengan data yang dikirim
-        $deal->update($data);
+    //     // Update data deal sesuai dengan data yang dikirim
+    //     $deal->update($data);
 
-        return $deal;
-    }
+    //     return $deal;
+    // }
 
     // Mendapatkan semua deals
     public function getAllDeals()

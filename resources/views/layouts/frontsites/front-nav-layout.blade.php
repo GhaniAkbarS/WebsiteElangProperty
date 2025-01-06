@@ -64,6 +64,9 @@
                                 <a href="index.html">Beranda </a>
                             </li>
                             <li>
+                                <a href="{{ route('akad') }}">Akad</a>
+                            </li>
+                            <li>
                                 <a href="about.html">Tentang Kami</a>
                             </li>
                             <li class="dropdown">
@@ -75,8 +78,8 @@
                                     <li><a href="business-planning.html">Layanan Kredit Motor</a></li>
                                 </ul>
                             </li>
-                            <li >
-                                <a href="#">Artikel</a>
+                            <li>
+                                <a href="{{ route('artikel') }}">Artikel</a>
                             </li>
                             <li >
                                 <a href="#">Persyaratan</a>

@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Frontsites\home;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Slide;
-use App\Models\Blog; // Tambahkan model Slide untuk mengambil data dari tabel ep_slide
+use App\Models\Blog;
+use App\Models\Deal;// Tambahkan model Slide untuk mengambil data dari tabel ep_slide
 use App\Services\FrontSites\HomeService;
 
 class HomeController extends Controller
@@ -23,10 +24,11 @@ class HomeController extends Controller
 
         $data=[
             "slides" => $this->homeservice->handleHomeSlide(3),
-            "blogs"=>$this->homeservice->handleHomeBlog(6,['status'=>'publish']),
+            "blogs"=>$this->homeservice->handleHomeBlog(4,['status'=>'publish']),
+            "deals"=>$this->homeservice->handleHomeDeal(6),
             //'status' itu karena blog ada status nya publish apa engga
         ];
-        
+
 
         // Kirim data blogs ke view
         return view('pages.frontsites.home.index')->with($data);
