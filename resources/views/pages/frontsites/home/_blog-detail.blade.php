@@ -20,10 +20,10 @@
         <section class="page-header">
             <div class="container">
                 <div class="page-header__inner">
-                    <p class="news-one__sub-title">{{ $blog->category->title }}</p>
-                    <h2 style="color: rgb(255, 0, 0);">{{ $blog->title }}</h2>
+                    <p class="news-one__sub-title">{{ $bloges->category->title }}</p>
+                    <h2 style="color: rgb(255, 0, 0);">{{ $bloges->title }}</h2>
                     <p class="page-header__text">
-                        {{ $blog->created_at->format('d M Y') }}
+                        {{ $bloges->created_at->format('d M Y') }}
                     </p>
                 </div>
             </div>
@@ -34,17 +34,17 @@
                     <div class="col-xl-8 col-lg-7">
                         <div class="news-details__left">
                             <div class="news-details__img">
-                                <img src="{{ asset('storage/' . $blog->image) }}" alt="Blog Image" class="img-fluid" style="max-width: 600px;">
+                                <img src="{{ asset('storage/' . $bloges->image) }}" alt="Blog Image" class="img-fluid" style="max-width: 600px;">
                             </div>
                             <div class="news-details__author-and-meta">
                                 <div class="news-details__meta">
-                                    <p><span class="fas fa-calendar"></span>{{ $blog->created_at->format('d M Y') }}</p>
-                                    <p><span class="fas fa-tag"></span>{{ $blog->category->title }}</p>
+                                    <p><span class="fas fa-calendar"></span>{{ $bloges->created_at->format('d M Y') }}</p>
+                                    <p><span class="fas fa-tag"></span>{{ $bloges->category->title }}</p>
                                 </div>
                             </div>
-                            <h3 class="news-details__title-1">{{ $blog->title }}</h3>
+                            <h3 class="news-details__title-1">{{ $bloges->title }}</h3>
                             <p class="news-details__text-1">I believe in the power of design.</p>
-                            <p class="news-details__text-2">{{$blog->content}}</p>
+                            <p class="news-details__text-2">{{$bloges->content}}</p>
                             <p class="news-details__text-3">Organizations that aspire to benefit humanity touch us. They
                                 galvanize communities dedicated to good. Sometimes, they even launch extraordinary
                                 movements.</p>
@@ -93,7 +93,7 @@
                             <div class="news-details__tag-and-social">
                                 <div class="news-details__tag">
                                     <span>Tags:</span>
-                                    <a href="news-details.html">{{ $blog->keyword }}</a>
+                                    <a href="news-details.html">{{ $bloges->keyword }}</a>
                                 </div>
                                 <div class="news-details__social">
                                     <span>Share on:</span>
@@ -283,19 +283,19 @@
                                     <h3 class="sidebar__title">Recent Posts</h3>
                                 </div>
                                 <ul class="sidebar__post-list list-unstyled">
-                                    @foreach ($blogs as $blog)
+                                    @foreach ($blogs as $bloges)
                                     <li>
                                         <div class="sidebar__post-image">
-                                            <img src="{{ asset('storage/' . $blog->image) }}" alt="{{ $blog->title }}">
+                                            <img src="{{ asset('storage/' . $bloges->image) }}" alt="{{ $bloges->title }}">
                                         </div>
                                         <div class="sidebar__post-content">
                                             <h3 class="sidebar__post-title">
-                                                <a href="{{ route('blogs.detail', [$blog->category->slug, $blog->slug]) }}">
-                                                    {{ $blog->title }}
+                                                <a href="{{ route('blogs.detail', [$bloges->category->slug, $bloges->slug]) }}">
+                                                    {{ $bloges->title }}
                                                 </a>
                                             </h3>
                                             <p class="sidebar__post-date">
-                                                <span class="icon-time"></span> {{ $blog->created_at->format('d M, Y') }}
+                                                <span class="icon-time"></span> {{ $bloges->created_at->format('d M, Y') }}
                                             </p>
                                         </div>
                                     </li>
@@ -307,7 +307,7 @@
                                     <h3 class="sidebar__title">Tags</h3>
                                 </div>
                                 <div class="sidebar__tag-list">
-                                    <a href="news-details.html">{{ $blog->keyword }}</a>
+                                    <a href="news-details.html">{{ $bloges->keyword }}</a>
                                 </div>
                             </div>
                         </div>

@@ -37,9 +37,9 @@ class BlogsController extends Controller
      */
     public function show($category, $slug)
     {
-        $blog = Blog::with('category')->where('slug', $slug)->firstOrFail();
+        $bloges = Blog::with('category')->where('slug', $slug)->firstOrFail();
         $blogs = Blog::with('category')->latest()->take(5)->get();
-        return view('pages.frontsites.home._blog-detail', compact('blog', 'blogs'));
+        return view('pages.frontsites.home._blog-detail', compact('bloges', 'blogs'));
     }
 
     public function artikel() {
